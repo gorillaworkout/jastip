@@ -29,6 +29,7 @@ export default async function Home() {
   const addOrder=()=>{
 
   }
+  
 
   return (
     <>
@@ -51,7 +52,6 @@ export default async function Home() {
         <Stat title="Total Trip" value="12" change="+21.2%" />
       </div>
       <div className="mt-8 w-full flex justify-end">
-        {/* <Button className="hover:cursor-pointer">Add Order</Button> */}
         <ModalToggleSSR initialOpen={false} />
       </div>
       <Subheading className="mt-14">Recent orders</Subheading>
