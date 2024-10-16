@@ -7,6 +7,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { getRecentOrders } from '@/data'
 import { Button } from '@/components/button'
 import ModalToggleSSR from '@/components/ModalToggleSSR';
+import {db} from '@/config/firebase'
+import {collection , getDocs} from 'firebase/firestore'
 
 export function Stat({ title, value, change }: { title: string; value: string; change: string }) {
   return (
@@ -23,6 +25,7 @@ export function Stat({ title, value, change }: { title: string; value: string; c
 }
 
 export default async function Home() {
+  console.log('page Home is running');
   let orders = await getRecentOrders()
   // const [isAddOrder,setIsAddOrder] = useState(false);
 
@@ -30,7 +33,15 @@ export default async function Home() {
 
   }
   
-
+  // firebase
+  const collectionRef = collection(db,'orders')
+  const orderCollectionSnapshot = await getDocs(collectionRef)
+  console.log(orderCollectionSnapshot, 'ordercollection ')
+  // firebase
+  const orderList = orderCollectionSnapshot.docs.map(doc=>({
+    ...doc.data(), id:doc.id
+  }))
+  console.log(orderList, 'orderList')
   return (
     <>
       <Heading>Hello, Bayu Darmawan</Heading>
@@ -46,7 +57,7 @@ export default async function Home() {
         </div>
       </div>
       <div className="mt-4 grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat title="Total Income" value="20.600.000" change="+4.5%" />
+        <Stat title="Total Income" value="20.600.000" change="+4.5%" /> 
         <Stat title="Total Customer" value="20" change="-0.5%" />
         <Stat title="Total Address" value="20" change="+4.5%" />
         <Stat title="Total Trip" value="12" change="+21.2%" />
