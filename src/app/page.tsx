@@ -5,6 +5,8 @@ import { Heading, Subheading } from '@/components/heading'
 import { Select } from '@/components/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'
 import { getRecentOrders } from '@/data'
+import { Button } from '@/components/button'
+import ModalToggleSSR from '@/components/ModalToggleSSR';
 
 export function Stat({ title, value, change }: { title: string; value: string; change: string }) {
   return (
@@ -22,10 +24,15 @@ export function Stat({ title, value, change }: { title: string; value: string; c
 
 export default async function Home() {
   let orders = await getRecentOrders()
+  // const [isAddOrder,setIsAddOrder] = useState(false);
+
+  const addOrder=()=>{
+
+  }
 
   return (
     <>
-      <Heading>Good afternoon, Bayu Darmawan</Heading>
+      <Heading>Hello, Bayu Darmawan</Heading>
       <div className="mt-8 flex items-end justify-between">
         <Subheading>Overview</Subheading>
         <div>
@@ -42,6 +49,10 @@ export default async function Home() {
         <Stat title="Total Customer" value="20" change="-0.5%" />
         <Stat title="Total Address" value="20" change="+4.5%" />
         <Stat title="Total Trip" value="12" change="+21.2%" />
+      </div>
+      <div className="mt-8 w-full flex justify-end">
+        {/* <Button className="hover:cursor-pointer">Add Order</Button> */}
+        <ModalToggleSSR initialOpen={false} />
       </div>
       <Subheading className="mt-14">Recent orders</Subheading>
       <Table className="mt-4 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)]">
