@@ -75,7 +75,7 @@ export default function Home() {
       <div className="mt-4 grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
         <Stat title="Total Income" value="20.600.000" change="+4.5%" />
         <Stat title="Total Customer" value="20" change="-0.5%" />
-        <Stat title="Total Address" value="20" change="+4.5%" />
+        <Stat title="Total Weight" value="20" change="+4.5%" />
         <Stat title="Total Trip" value="12" change="+21.2%" />
       </div>
       <div className="mt-8 flex w-full justify-end">
@@ -99,6 +99,7 @@ export default function Home() {
             .slice() // Use slice to create a shallow copy to avoid mutating the original array
             .sort((a, b) => parseInt(a.id) - parseInt(b.id)) // Sort orders by ID in ascending order
             .map((order) => (
+              // <TableRow key={order.id} href={'/orders/3000'} title={`Order #${order.id}`}>
               <TableRow key={order.id}>
                 <TableCell>{order.id}</TableCell>
                 <TableCell>{order.name}</TableCell>
