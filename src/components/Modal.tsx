@@ -6,29 +6,32 @@ import { Heading, Subheading } from '@/components/heading'
 import { Input } from '@/components/input'
 import { Select } from '@/components/select'
 import { Textarea } from '@/components/textarea'
-
+import { OrderData } from './ModalToggleSSR'
 interface ModalProps {
   isOpen: boolean
   toggleModal: () => void
   onSave: (orderData: OrderData) => void // Pass the form data to parent on save
 }
 
-interface OrderData {
-  name: string
-  address: string
-  phone: string
-  receiveTime: string
-  pricePerKg: string
-}
+// interface OrderData {
+//   id: string;
+//   name: string
+//   address: string
+//   phone: string
+//   receiveTime: string
+//   pricePerKg: string
+// }
 
 // Modal component
 const Modal: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave }) => {
   const [formData, setFormData] = useState<OrderData>({
+    id: '',
     name: '',
     address: '',
     phone: '',
     receiveTime: '',
     pricePerKg: '',
+    totalKg: ''
   })
 
   if (!isOpen) return null
@@ -93,10 +96,11 @@ const Modal: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave }) => {
 
           <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
             <div className="space-y-1">
-              <Subheading>Receive Time</Subheading>
+              <Subheading>Receive</Subheading>
             </div>
             <div>
-              <Select aria-label="Receive Time" name="receiveTime" value={formData.receiveTime} onChange={handleInputChange}>
+              <Select aria-label="Receive Time" name="receiveTime"  value={formData.receiveTime} onChange={handleInputChange}>
+                <option value="8-12">Select</option>
                 <option value="8-12">8-12</option>
                 <option value="14-16">14-16</option>
                 <option value="16-18">16-18</option>
@@ -104,6 +108,16 @@ const Modal: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave }) => {
                 <option value="19-21">19-21</option>
                 <option value="bebas">Bebas</option>
               </Select>
+            </div>
+          </section>
+          <Divider className="my-5" soft />
+
+          <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+            <div className="space-y-1">
+              <Subheading>Total KG</Subheading>
+            </div>
+            <div>
+              <Input aria-label="Total KG" name="totalKg" value={formData.totalKg} onChange={handleInputChange} />
             </div>
           </section>
 

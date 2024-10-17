@@ -1,14 +1,16 @@
-import { Avatar } from '@/components/avatar'
+'use client'
 import { Badge } from '@/components/badge'
 import { Divider } from '@/components/divider'
 import { Heading, Subheading } from '@/components/heading'
+import ModalToggleSSR from '@/components/ModalToggleSSR'
 import { Select } from '@/components/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'
-import { getRecentOrders } from '@/data'
-import { Button } from '@/components/button'
-import ModalToggleSSR from '@/components/ModalToggleSSR';
-import {db} from '@/config/firebase'
-import {collection , getDocs} from 'firebase/firestore'
+import { db } from '@/config/firebase'
+import { RootState } from '@/features/store'
+import { collection, getDocs } from 'firebase/firestore'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { setOrders } from '../features/orders/orderSlice'
 
 export function Stat({ title, value, change }: { title: string; value: string; change: string }) {
   return (
@@ -24,24 +26,38 @@ export function Stat({ title, value, change }: { title: string; value: string; c
   )
 }
 
-export default async function Home() {
-  console.log('page Home is running');
-  let orders = await getRecentOrders()
-  // const [isAddOrder,setIsAddOrder] = useState(false);
+export default function Home() {
+  const dispatch = useDispatch()
+  const allOrders = useSelector((state: RootState) => state.orders.orders)
+  console.log(allOrders, 'allorders')
+  const [isFetched, setIsFetched] = useState(false) // Local state to track if data is fetched
 
-  const addOrder=()=>{
+  // Fetching orders from Firestore
+  useEffect(() => {
+    if (isFetched) return // Prevent fetching if already done
 
-  }
-  
-  // firebase
-  const collectionRef = collection(db,'orders')
-  const orderCollectionSnapshot = await getDocs(collectionRef)
-  console.log(orderCollectionSnapshot, 'ordercollection ')
-  // firebase
-  const orderList = orderCollectionSnapshot.docs.map(doc=>({
-    ...doc.data(), id:doc.id
-  }))
-  console.log(orderList, 'orderList')
+    console.log('Fetching orders from Firestore...')
+    const fetchingOrders = async () => {
+      const collectionRef = collection(db, 'orders')
+      const orderCollectionSnapshot = await getDocs(collectionRef)
+
+      const orderList = orderCollectionSnapshot.docs.map((doc) => ({
+        id: doc.data().id || 'Error Id',
+        name: doc.data().name || 'Unknown',
+        address: doc.data().address || '',
+        phone: doc.data().phone || '',
+        receiveTime: doc.data().receiveTime || '',
+        pricePerKg: doc.data().pricePerKg || '0',
+        totalKg: doc.data().totalKg || '0',
+      }))
+
+      dispatch(setOrders(orderList))
+      setIsFetched(true) // Set the flag to true after fetching
+    }
+
+    fetchingOrders()
+  }, [dispatch, allOrders, isFetched]) // Add isFetched as a dependency
+
   return (
     <>
       <Heading>Hello, Bayu Darmawan</Heading>
@@ -57,37 +73,44 @@ export default async function Home() {
         </div>
       </div>
       <div className="mt-4 grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat title="Total Income" value="20.600.000" change="+4.5%" /> 
+        <Stat title="Total Income" value="20.600.000" change="+4.5%" />
         <Stat title="Total Customer" value="20" change="-0.5%" />
         <Stat title="Total Address" value="20" change="+4.5%" />
         <Stat title="Total Trip" value="12" change="+21.2%" />
       </div>
-      <div className="mt-8 w-full flex justify-end">
+      <div className="mt-8 flex w-full justify-end">
         <ModalToggleSSR initialOpen={false} />
       </div>
       <Subheading className="mt-14">Recent orders</Subheading>
       <Table className="mt-4 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)]">
         <TableHead>
           <TableRow>
-            <TableHeader>Order number</TableHeader>
-            <TableHeader>Customer</TableHeader>
+            <TableHeader>Order ID</TableHeader>
+            <TableHeader>Name</TableHeader>
             <TableHeader>Address</TableHeader>
             <TableHeader>Phone</TableHeader>
-            <TableHeader>Receive Time</TableHeader>
-            <TableHeader className="text-right">Amount</TableHeader>
+            <TableHeader>Receive</TableHeader>
+            <TableHeader>Total KG</TableHeader>
+            <TableHeader className="text-right">Price</TableHeader>
           </TableRow>
         </TableHead>
         <TableBody>
-          {orders.map((order) => (
-            <TableRow key={order.id} href={order.url} title={`Order #${order.id}`}>
-              <TableCell>{order.id}</TableCell>
-              <TableCell>{order.customer.name}</TableCell>
-              <TableCell>{order.customer.name}</TableCell>
-              <TableCell>{order.customer.name}</TableCell>
-              <TableCell>{order.customer.name}</TableCell>
-              <TableCell className="text-right">US{order.amount.usd}</TableCell>
-            </TableRow>
-          ))}
+          {allOrders
+            .slice() // Use slice to create a shallow copy to avoid mutating the original array
+            .sort((a, b) => parseInt(a.id) - parseInt(b.id)) // Sort orders by ID in ascending order
+            .map((order) => (
+              <TableRow key={order.id}>
+                <TableCell>{order.id}</TableCell>
+                <TableCell>{order.name}</TableCell>
+                <TableCell className="line-clamp-2 overflow-hidden text-ellipsis whitespace-normal">
+                  {order.address}
+                </TableCell>
+                <TableCell>{order.phone}</TableCell>
+                <TableCell>{order.receiveTime}</TableCell>
+                <TableCell>{order.totalKg}</TableCell>
+                <TableCell className="text-right">{order.pricePerKg} Y</TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </>
