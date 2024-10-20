@@ -9,6 +9,7 @@ import { collection, getDocs } from 'firebase/firestore'
 import { db } from '@/config/firebase'
 interface ModalToggleSSRProps {
   initialOpen: boolean
+  description: string;
 }
 
 export interface OrderData {
@@ -22,7 +23,7 @@ export interface OrderData {
 }
 
 // Main component with toggle logic
-const ModalToggleSSR: React.FC<ModalToggleSSRProps> = ({ initialOpen }) => {
+const ModalToggleSSR: React.FC<ModalToggleSSRProps> = ({ initialOpen , description}) => {
   const dispatch = useDispatch();
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(initialOpen)
@@ -60,7 +61,7 @@ const ModalToggleSSR: React.FC<ModalToggleSSRProps> = ({ initialOpen }) => {
     <>
       <div>
         <Button onClick={toggleModal} className="hover:cursor-pointer">
-          {isModalOpen ? 'Close Order' : 'Add Order'}
+          {isModalOpen ? `Close ${description}` : `Add ${description}`}
         </Button>
         <Modal isOpen={isModalOpen} toggleModal={toggleModal} onSave={handleSave} />
       </div>

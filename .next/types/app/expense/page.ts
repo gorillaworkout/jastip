@@ -1,4 +1,4 @@
-// File: C:\projects\jastip\src\app\expense\page.tsx
+// File: /Users/new/Desktop/Desktop - Gorillaworkout MBP/desktop/new_jastip_project/src/app/expense/page.tsx
 import * as entry from '../../../../src/app/expense/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

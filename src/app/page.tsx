@@ -31,6 +31,7 @@ export default function Home() {
   const allOrders = useSelector((state: RootState) => state.orders.orders)
   console.log(allOrders, 'allorders')
   const [isFetched, setIsFetched] = useState(false) // Local state to track if data is fetched
+  const [activeTrip, setActiveTrip] = useState<string>('september')
 
   // Fetching orders from Firestore
   useEffect(() => {
@@ -38,6 +39,17 @@ export default function Home() {
 
     console.log('Fetching orders from Firestore...')
     const fetchingOrders = async () => {
+      // fetch all trip 
+      const collectionTrip = collection(db, 'trip')
+      const tripCollectionSnapshot = await getDocs(collectionTrip)
+
+      const tripList = tripCollectionSnapshot.docs.map((doc) => ({
+        id: doc.data().id || 'Error Id',
+        tripName: doc.data().tripName || 'Unknown',
+      }))
+      console.log(tripList, 'trip list')
+      // fetch all trip
+
       const collectionRef = collection(db, 'orders')
       const orderCollectionSnapshot = await getDocs(collectionRef)
 
@@ -50,7 +62,30 @@ export default function Home() {
         pricePerKg: doc.data().pricePerKg || '0',
         totalKg: doc.data().totalKg || '0',
       }))
-
+      const order = orderCollectionSnapshot.docs
+      .map((doc) => {
+        // Logging the trip name for debugging
+        console.log(doc.data().tripName, ' doc ', activeTrip);
+    
+        // Check if tripName matches the activeTrip
+        if (doc.data().tripName === activeTrip) {
+          return {
+            id: doc.data().id || 'Error Id',
+            name: doc.data().name || 'Unknown',
+            address: doc.data().address || '',
+            phone: doc.data().phone || '',
+            receiveTime: doc.data().receiveTime || '',
+            pricePerKg: doc.data().pricePerKg || '0',
+            totalKg: doc.data().totalKg || '0',
+            tripName: doc.data().tripName || 'Unknown',
+          };
+        }
+    
+        // Return undefined for unmatched docs
+        return undefined;
+      })
+      .filter(Boolean); // Remove undefined values    
+      console.log(order, 'final order after filter')
       dispatch(setOrders(orderList))
       setIsFetched(true) // Set the flag to true after fetching
     }
@@ -60,7 +95,10 @@ export default function Home() {
 
   return (
     <>
-      <Heading>Hello, Bayu Darmawan</Heading>
+     <div className="mt-8 flex w-full justify-between items-center">
+        <Heading>Hello, Bayu Darmawan</Heading>
+        <ModalToggleSSR initialOpen={false} description={'Trip'} />
+      </div>
       <div className="mt-8 flex items-end justify-between">
         <Subheading>Overview</Subheading>
         <div>
@@ -79,7 +117,7 @@ export default function Home() {
         <Stat title="Total Trip" value="12" change="+21.2%" />
       </div>
       <div className="mt-8 flex w-full justify-end">
-        <ModalToggleSSR initialOpen={false} />
+        <ModalToggleSSR initialOpen={false} description={'Order'} />
       </div>
       <Subheading className="mt-14">Recent orders</Subheading>
       <Table className="mt-4 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)]">
