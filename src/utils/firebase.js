@@ -8,4 +8,10 @@ const addPost = async (formData)=>{
     await addDoc(collectionRef,formData)
 }
 
- export { addPost }
+const addTripFirebase = async (formData)=>{
+    console.log('add trip is running')
+    const collectionRef = collection(db, 'trip')
+    await addDoc(collectionRef,formData)
+}
+
+ export { addPost, addTripFirebase }

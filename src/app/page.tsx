@@ -11,6 +11,7 @@ import { collection, getDocs } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setOrders } from '../features/orders/orderSlice'
+import ModalToggleTrip from '@/components/ModalToggleTrip'
 
 export function Stat({ title, value, change }: { title: string; value: string; change: string }) {
   return (
@@ -97,7 +98,7 @@ export default function Home() {
     <>
      <div className="mt-8 flex w-full justify-between items-center">
         <Heading>Hello, Bayu Darmawan</Heading>
-        <ModalToggleSSR initialOpen={false} description={'Trip'} />
+        <ModalToggleTrip initialOpen={false} description={'Trip'} />
       </div>
       <div className="mt-8 flex items-end justify-between">
         <Subheading>Overview</Subheading>
