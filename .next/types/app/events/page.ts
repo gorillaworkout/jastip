@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // File: /Users/new/Desktop/Desktop - Gorillaworkout MBP/desktop/new_jastip_project/src/app/events/page.tsx
+=======
+// File: C:\projects\jastip\src\app\events\page.tsx
+>>>>>>> 7dc82910d531dba9269b0ec9b45672dff38df9a7
 import * as entry from '../../../../src/app/events/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
