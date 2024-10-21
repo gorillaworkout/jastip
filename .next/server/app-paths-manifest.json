@@ -1,4 +1,8 @@
 {
   "/page": "app/page.js",
+<<<<<<< Updated upstream
   "/favicon.ico/route": "app/favicon.ico/route.js"
+=======
+  "/expense/page": "app/expense/page.js"
+>>>>>>> Stashed changes
 }
