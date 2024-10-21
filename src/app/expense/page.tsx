@@ -79,7 +79,7 @@ export default function Expense() {
         <Stat title="Total Trip" value="12" change="+21.2%" />
       </div>
       <div className="mt-8 flex w-full justify-end">
-        <ModalToggleSSR initialOpen={false} />
+        <ModalToggleSSR initialOpen={false} description={'Expense'}/>
       </div>
       <Subheading className="mt-14">Recent Expense</Subheading>
       <Table className="mt-4 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)]">

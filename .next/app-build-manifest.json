@@ -1,23 +1,20 @@
 {
   "pages": {
-    "/page": [
+    "/expense/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
+      "static/chunks/app/expense/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
-<<<<<<< Updated upstream
-=======
     ],
-    "/expense/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/expense/page.js"
->>>>>>> Stashed changes
+      "static/chunks/app/page.js"
     ]
   }
 }

@@ -4,7 +4,7 @@ import { Button } from '@/components/button'
 import { Divider } from '@/components/divider'
 import { Heading, Subheading } from '@/components/heading'
 import { Input } from '@/components/input'
-import { TripData } from './ModalToggleTrip'
+import { TripData } from '@/interface/interface'
 import { Description } from '@headlessui/react'
 
 interface ModalProps {
@@ -38,7 +38,7 @@ const ModalTrip: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave }) => {
   return (
     <div className="modal-overlay z-50" style={overlayStyle}>
       <div className="modal-content w-1/2" style={modalStyle}>
-        <form method="post" className="mx-auto max-h-[700px] overflow-y-scroll p-4" onSubmit={handleSubmit}>
+        <form method="post" className="mx-auto max-h-[700px] overflow-auto  p-4" onSubmit={handleSubmit}>
           <div className="flex flex-row justify-between">
             <Heading>Add Trip</Heading>
             <Button onClick={toggleModal} className="hover:cursor-pointer">

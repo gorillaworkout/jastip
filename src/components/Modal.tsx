@@ -6,7 +6,7 @@ import { Heading, Subheading } from '@/components/heading'
 import { Input } from '@/components/input'
 import { Select } from '@/components/select'
 import { Textarea } from '@/components/textarea'
-import { OrderData } from './ModalToggleSSR'
+import { OrderData } from '@/interface/interface'
 interface ModalProps {
   isOpen: boolean
   toggleModal: () => void
@@ -31,7 +31,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave }) => {
     phone: '',
     receiveTime: '',
     pricePerKg: '',
-    totalKg: ''
+    totalKg: '',
+    tripName: ''
   })
 
   if (!isOpen) return null
@@ -51,7 +52,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave }) => {
   return (
     <div className="modal-overlay z-50" style={overlayStyle}>
       <div className="modal-content w-1/2" style={modalStyle}>
-        <form method="post" className="mx-auto max-h-[700px] overflow-y-scroll p-4" onSubmit={handleSubmit}>
+        <form method="post" className="mx-auto max-h-[700px] overflow-auto p-4" onSubmit={handleSubmit}>
           <div className="flex flex-row justify-between">
             <Heading>Add Order</Heading>
             <Button onClick={toggleModal} className="hover:cursor-pointer">
