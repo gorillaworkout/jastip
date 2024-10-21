@@ -8,7 +8,7 @@ import { Select } from '@/components/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'
 import { db } from '@/config/firebase'
 import { RootState } from '@/features/store'
-import { OrderData, TripData } from '@/interface/interface'
+import { TripData } from '@/interface/interface'
 import { collection, getDocs } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -57,31 +57,19 @@ export default function Home() {
       const collectionRef = collection(db, 'orders')
       const orderCollectionSnapshot = await getDocs(collectionRef)
 
-      const order = orderCollectionSnapshot.docs
-        .map((doc) => {
-          // Logging the trip name for debugging
-          console.log(doc.data().tripName, ' doc ', activeTrip)
-
-          // Check if tripName matches the activeTrip
-          // if (doc.data().tripName === activeTrip) {
-            return {
-              id: doc.data().id || 'Error Id',
-              name: doc.data().name || 'Unknown',
-              address: doc.data().address || '',
-              phone: doc.data().phone || '',
-              receiveTime: doc.data().receiveTime || '',
-              pricePerKg: doc.data().pricePerKg || '0',
-              totalKg: doc.data().totalKg || '0',
-              tripName: doc.data().tripName || 'Unknown',
-            }
-          // }
-
-          // Return undefined for unmatched docs
-          // return undefined
-        })
-        // .filter(Boolean) as OrderData[] // Remove undefined values
-      console.log(order, 'final order after filter')
-      // console.log(orderList, 'final order list')
+      const order = orderCollectionSnapshot.docs.map((doc) => {
+        // Logging the trip name for debugging
+        return {
+          id: doc.data().id || 'Error Id',
+          name: doc.data().name || 'Unknown',
+          address: doc.data().address || '',
+          phone: doc.data().phone || '',
+          receiveTime: doc.data().receiveTime || '',
+          pricePerKg: doc.data().pricePerKg || '0',
+          totalKg: doc.data().totalKg || '0',
+          tripName: doc.data().tripName || 'Unknown',
+        }
+      })
       dispatch(setOrders(order))
       setIsFetched(true) // Set the flag to true after fetching
     }
@@ -144,7 +132,7 @@ export default function Home() {
             .slice() // Use slice to create a shallow copy to avoid mutating the original array
             .sort((a, b) => parseInt(a.id) - parseInt(b.id)) // Sort orders by ID in ascending order
             .map((order) => {
-              if (order.tripName === activeTrip){
+              if (order.tripName === activeTrip) {
                 return (
                   // <TableRow key={order.id} href={'/orders/3000'} title={`Order #${order.id}`}>
                   <TableRow key={order.id}>
@@ -158,7 +146,7 @@ export default function Home() {
                     <TableCell>{order.totalKg}</TableCell>
                     <TableCell className="text-right">{order.pricePerKg} Y</TableCell>
                   </TableRow>
-                ) 
+                )
               }
             })}
         </TableBody>
