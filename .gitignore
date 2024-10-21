@@ -5,7 +5,10 @@ dist/
 build/
 .cache/
 out/
-
+.next/cache/
+.next/
+.next/server/
+.next/static/
 # Logs
 logs/
 *.log
@@ -25,4 +28,4 @@ node_modules/
 # Optional REACT files
 public/
 coverage/
-.next/cache/
+
