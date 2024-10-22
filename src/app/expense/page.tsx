@@ -26,6 +26,9 @@ export function Stat({ title, value, change }: { title: string; value: string; c
   )
 }
 
+export function formatToRupiah(amount: number): string {
+  return 'RP ' + amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
 export default function Expense() {
   const dispatch = useDispatch()
   const allExpenses = useSelector((state: RootState) => state.expenses.expenses)
@@ -54,9 +57,6 @@ export default function Expense() {
     fetchingOrders()
   }, [dispatch, allExpenses, isFetched]) // Add isFetched as a dependency
 
-  function formatToRupiah(amount: number): string {
-    return 'RP ' + amount.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  }
   
   return (
     <>

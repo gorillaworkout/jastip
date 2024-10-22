@@ -37,6 +37,7 @@ const ModalToggleTrip: React.FC<ModalToggleSSRProps> = ({ initialOpen , descript
       tripName: tripData.tripName,
       tripWeight: tripData.tripWeight,
       tripRoute: tripData.tripRoute,
+      tripDate: tripData.tripDate
     }
     addTripFirebase(finalTripData)
     dispatch(addTrip(finalTripData))

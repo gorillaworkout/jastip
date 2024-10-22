@@ -4,9 +4,10 @@ export interface OrderData {
     address: string
     phone: string
     receiveTime: string
-    pricePerKg: string
-    totalKg: string
+    pricePerKg: number
+    totalKg: number
     tripName: string
+    detail:string;
   }
 
   export interface TripData {
@@ -14,5 +15,6 @@ export interface OrderData {
     tripName: string;
     tripWeight: string;
     tripRoute: string;
+    tripDate: string;
   }
   

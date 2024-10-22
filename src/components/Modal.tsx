@@ -30,9 +30,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave }) => {
     address: '',
     phone: '',
     receiveTime: '',
-    pricePerKg: '',
-    totalKg: '',
-    tripName: ''
+    pricePerKg: 0,
+    totalKg: 0,
+    tripName: '',
+    detail: ''
   })
 
   if (!isOpen) return null
@@ -68,6 +69,17 @@ const Modal: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave }) => {
             </div>
             <div>
               <Input aria-label="Customer Name" name="name" value={formData.name} onChange={handleInputChange} />
+            </div>
+          </section>
+
+          <Divider className="my-5" soft />
+          
+          <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+            <div className="space-y-1">
+              <Subheading>Customer Detail</Subheading>
+            </div>
+            <div>
+              <Textarea aria-label="Customer Detail" name="detail" value={formData.detail} onChange={handleInputChange} />
             </div>
           </section>
 

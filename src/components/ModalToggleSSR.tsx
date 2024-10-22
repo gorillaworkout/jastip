@@ -41,7 +41,8 @@ const ModalToggleSSR: React.FC<ModalToggleSSRProps> = ({ initialOpen , descripti
       pricePerKg: orderData.pricePerKg,
       receiveTime: orderData.receiveTime === '' ? '19-21' : orderData.receiveTime,
       totalKg: orderData.totalKg,
-      tripName: orderData.tripName
+      tripName: orderData.tripName,
+      detail: orderData.detail
     }
     addPost(finalOrderData)
     dispatch(addOrder(finalOrderData))
