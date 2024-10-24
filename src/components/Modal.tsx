@@ -6,7 +6,7 @@ import { Heading, Subheading } from '@/components/heading'
 import { Input } from '@/components/input'
 import { Select } from '@/components/select'
 import { Textarea } from '@/components/textarea'
-import { OrderData } from './ModalToggleSSR'
+import { OrderData } from '@/interface/interface'
 interface ModalProps {
   isOpen: boolean
   toggleModal: () => void
@@ -30,8 +30,10 @@ const Modal: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave }) => {
     address: '',
     phone: '',
     receiveTime: '',
-    pricePerKg: '',
-    totalKg: ''
+    pricePerKg: 0,
+    totalKg: 0,
+    tripName: '',
+    detail: ''
   })
 
   if (!isOpen) return null
@@ -51,7 +53,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave }) => {
   return (
     <div className="modal-overlay z-50" style={overlayStyle}>
       <div className="modal-content w-1/2" style={modalStyle}>
-        <form method="post" className="mx-auto max-h-[700px] overflow-y-scroll p-4" onSubmit={handleSubmit}>
+        <form method="post" className="mx-auto max-h-[700px] overflow-auto p-4" onSubmit={handleSubmit}>
           <div className="flex flex-row justify-between">
             <Heading>Add Order</Heading>
             <Button onClick={toggleModal} className="hover:cursor-pointer">
@@ -67,6 +69,17 @@ const Modal: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave }) => {
             </div>
             <div>
               <Input aria-label="Customer Name" name="name" value={formData.name} onChange={handleInputChange} />
+            </div>
+          </section>
+
+          <Divider className="my-5" soft />
+          
+          <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+            <div className="space-y-1">
+              <Subheading>Customer Detail</Subheading>
+            </div>
+            <div>
+              <Textarea aria-label="Customer Detail" name="detail" value={formData.detail} onChange={handleInputChange} />
             </div>
           </section>
 

@@ -7,20 +7,13 @@ import { addOrder } from '@/features/orders/orderSlice'
 import { useDispatch, useSelector } from 'react-redux';
 import { collection, getDocs } from 'firebase/firestore'
 import { db } from '@/config/firebase'
+import { OrderData } from '@/interface/interface'
 interface ModalToggleSSRProps {
   initialOpen: boolean
   description: string;
 }
 
-export interface OrderData {
-  id:string;
-  name: string
-  address: string
-  phone: string
-  receiveTime: string
-  pricePerKg: string
-  totalKg: string
-}
+
 
 // Main component with toggle logic
 const ModalToggleSSR: React.FC<ModalToggleSSRProps> = ({ initialOpen , description}) => {
@@ -47,7 +40,9 @@ const ModalToggleSSR: React.FC<ModalToggleSSRProps> = ({ initialOpen , descripti
       phone:orderData.phone,
       pricePerKg: orderData.pricePerKg,
       receiveTime: orderData.receiveTime === '' ? '19-21' : orderData.receiveTime,
-      totalKg: orderData.totalKg
+      totalKg: orderData.totalKg,
+      tripName: orderData.tripName,
+      detail: orderData.detail
     }
     addPost(finalOrderData)
     dispatch(addOrder(finalOrderData))

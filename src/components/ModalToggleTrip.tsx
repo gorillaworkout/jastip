@@ -7,17 +7,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { collection, getDocs } from 'firebase/firestore'
 import { db } from '@/config/firebase'
 import { addTripFirebase } from '@/utils/firebase'
+import { TripData } from '@/interface/interface'
 interface ModalToggleSSRProps {
   initialOpen: boolean
   description: string;
 }
 
-export interface TripData {
-  id:string;
-  tripName: string;
-  tripWeight: string;
-  tripRoute: string;
-}
 
 // Main component with toggle logic
 const ModalToggleTrip: React.FC<ModalToggleSSRProps> = ({ initialOpen , description}) => {
@@ -42,6 +37,7 @@ const ModalToggleTrip: React.FC<ModalToggleSSRProps> = ({ initialOpen , descript
       tripName: tripData.tripName,
       tripWeight: tripData.tripWeight,
       tripRoute: tripData.tripRoute,
+      tripDate: tripData.tripDate
     }
     addTripFirebase(finalTripData)
     dispatch(addTrip(finalTripData))

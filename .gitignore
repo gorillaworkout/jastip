@@ -1,1 +1,31 @@
 node_modules
+# Cache and build artifacts
+node_modules/
+dist/
+build/
+.cache/
+out/
+.next/cache/
+.next/
+.next/server/
+.next/static/
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependencies
+node_modules/
+
+# Optional npm cache directory
+.npm/
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REACT files
+public/
+coverage/
+

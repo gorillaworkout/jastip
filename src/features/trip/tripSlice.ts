@@ -1,7 +1,7 @@
 // features/orders/ordersSlice.ts
 "use client"
+import { TripData } from '@/interface/interface'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { TripData } from '@/components/ModalToggleTrip'
 
 interface tripsState {
   trips: TripData[]
