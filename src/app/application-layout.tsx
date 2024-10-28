@@ -28,29 +28,19 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   Cog8ToothIcon,
-  LightBulbIcon,
-  PlusIcon,
-  ShieldCheckIcon,
-  UserCircleIcon,
 } from '@heroicons/react/16/solid'
-import {
-  Cog6ToothIcon,
-  HomeIcon,
-  QuestionMarkCircleIcon,
-  SparklesIcon,
-  Square2StackIcon,
-  TicketIcon,
-} from '@heroicons/react/20/solid'
+import { Cog6ToothIcon, HomeIcon, Square2StackIcon, TicketIcon } from '@heroicons/react/20/solid'
 import { usePathname } from 'next/navigation'
+import { useState } from 'react'
 
-function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' }) {
+function AccountDropdownMenu({ anchor, isLogin }: { anchor: 'top start' | 'bottom end'; isLogin: false | true }) {
   return (
     <DropdownMenu className="min-w-64" anchor={anchor}>
-      <DropdownItem href="#">
+      {/* <DropdownItem href="#">
         <UserCircleIcon />
         <DropdownLabel>My account</DropdownLabel>
-      </DropdownItem>
-      <DropdownDivider />
+      </DropdownItem> */}
+      {/* <DropdownDivider />
       <DropdownItem href="#">
         <ShieldCheckIcon />
         <DropdownLabel>Privacy policy</DropdownLabel>
@@ -58,12 +48,19 @@ function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' })
       <DropdownItem href="#">
         <LightBulbIcon />
         <DropdownLabel>Share feedback</DropdownLabel>
-      </DropdownItem>
-      <DropdownDivider />
-      <DropdownItem href="#">
-        <ArrowRightStartOnRectangleIcon />
-        <DropdownLabel>Sign out</DropdownLabel>
-      </DropdownItem>
+      </DropdownItem> */}
+      {/* <DropdownDivider /> */}
+      {isLogin ? (
+        <DropdownItem href="#">
+          <ArrowRightStartOnRectangleIcon />
+          <DropdownLabel>Sign out</DropdownLabel>
+        </DropdownItem>
+      ) : (
+        <DropdownItem href="#">
+          <ArrowRightStartOnRectangleIcon />
+          <DropdownLabel>Sign In</DropdownLabel>
+        </DropdownItem>
+      )}
     </DropdownMenu>
   )
 }
@@ -76,7 +73,7 @@ export function ApplicationLayout({
   children: React.ReactNode
 }) {
   let pathname = usePathname()
-
+  const [isLogin, setIsLogin] = useState<boolean>(false)
   return (
     <SidebarLayout
       navbar={
@@ -87,7 +84,7 @@ export function ApplicationLayout({
               <DropdownButton as={NavbarItem}>
                 <Avatar src="/users/erica.jpg" square />
               </DropdownButton>
-              <AccountDropdownMenu anchor="bottom end" />
+              <AccountDropdownMenu anchor="bottom end" isLogin={isLogin} />
             </Dropdown>
           </NavbarSection>
         </Navbar>
@@ -111,54 +108,55 @@ export function ApplicationLayout({
                   <Avatar slot="icon" src="/teams/catalyst.svg" />
                   <DropdownLabel>Jastip</DropdownLabel>
                 </DropdownItem>
-                <DropdownItem href="#">
+                {/* <DropdownItem href="#">
                   <Avatar slot="icon" initials="BE" className="bg-purple-500 text-white" />
                   <DropdownLabel>Big Events</DropdownLabel>
-                </DropdownItem>
+                </DropdownItem> */}
                 <DropdownDivider />
-                <DropdownItem href="#">
+                {/* <DropdownItem href="#">
                   <PlusIcon />
                   <DropdownLabel>New team&hellip;</DropdownLabel>
-                </DropdownItem>
+                </DropdownItem> */}
               </DropdownMenu>
             </Dropdown>
           </SidebarHeader>
+          {isLogin ? (
+            <>
+              <SidebarBody>
+                <SidebarSection>
+                  <SidebarItem href="/" current={pathname === '/'}>
+                    <HomeIcon />
+                    <SidebarLabel>Home</SidebarLabel>
+                  </SidebarItem>
+                  <SidebarItem href="/expense" current={pathname.startsWith('/expense')}>
+                    <Square2StackIcon />
+                    <SidebarLabel>Expense</SidebarLabel>
+                  </SidebarItem>
+                  <SidebarItem href="/events" current={pathname.startsWith('/events')}>
+                    <Square2StackIcon />
+                    <SidebarLabel>Events</SidebarLabel>
+                  </SidebarItem>
+                  <SidebarItem href="/orders" current={pathname.startsWith('/orders')}>
+                    <TicketIcon />
+                    <SidebarLabel>Orders</SidebarLabel>
+                  </SidebarItem>
+                  <SidebarItem href="/settings" current={pathname.startsWith('/settings')}>
+                    <Cog6ToothIcon />
+                    <SidebarLabel>Settings</SidebarLabel>
+                  </SidebarItem>
+                </SidebarSection>
 
-          <SidebarBody>
-            <SidebarSection>
-              <SidebarItem href="/" current={pathname === '/'}>
-                <HomeIcon />
-                <SidebarLabel>Home</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem href="/expense" current={pathname.startsWith('/expense')}>
-                <Square2StackIcon />
-                <SidebarLabel>Expense</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem href="/events" current={pathname.startsWith('/events')}>
-                <Square2StackIcon />
-                <SidebarLabel>Events</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem href="/orders" current={pathname.startsWith('/orders')}>
-                <TicketIcon />
-                <SidebarLabel>Orders</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem href="/settings" current={pathname.startsWith('/settings')}>
-                <Cog6ToothIcon />
-                <SidebarLabel>Settings</SidebarLabel>
-              </SidebarItem>
-            </SidebarSection>
+                <SidebarSection className="max-lg:hidden">
+                  <SidebarHeading>Upcoming Events</SidebarHeading>
+                  {events.map((event) => (
+                    <SidebarItem key={event.id} href={event.url}>
+                      {event.name}
+                    </SidebarItem>
+                  ))}
+                </SidebarSection>
 
-            <SidebarSection className="max-lg:hidden">
-              <SidebarHeading>Upcoming Events</SidebarHeading>
-              {events.map((event) => (
-                <SidebarItem key={event.id} href={event.url}>
-                  {event.name}
-                </SidebarItem>
-              ))}
-            </SidebarSection>
-
-            <SidebarSpacer />
-
+                <SidebarSpacer />
+                {/* 
             <SidebarSection>
               <SidebarItem href="#">
                 <QuestionMarkCircleIcon />
@@ -168,26 +166,49 @@ export function ApplicationLayout({
                 <SparklesIcon />
                 <SidebarLabel>Changelog</SidebarLabel>
               </SidebarItem>
-            </SidebarSection>
-          </SidebarBody>
-
-          <SidebarFooter className="max-lg:hidden">
-            <Dropdown>
-              <DropdownButton as={SidebarItem}>
-                <span className="flex min-w-0 items-center gap-3">
-                  <Avatar src="/users/erica.jpg" className="size-10" square alt="" />
-                  <span className="min-w-0">
-                    <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">Bayu Darmawan</span>
-                    <span className="block truncate text-xs/5 font-normal text-zinc-500 dark:text-zinc-400">
-                      bdarmawan@uxbee.nl
+            </SidebarSection> */}
+              </SidebarBody>
+              <SidebarFooter className="max-lg:hidden">
+                <Dropdown>
+                  <DropdownButton as={SidebarItem}>
+                    <span className="flex min-w-0 items-center gap-3">
+                      <Avatar src="/users/erica.jpg" className="size-10" square alt="" />
+                      <span className="min-w-0">
+                        <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">
+                          Bayu Darmawan
+                        </span>
+                        <span className="block truncate text-xs/5 font-normal text-zinc-500 dark:text-zinc-400">
+                          bdarmawan@uxbee.nl
+                        </span>
+                      </span>
                     </span>
-                  </span>
-                </span>
-                <ChevronUpIcon />
-              </DropdownButton>
-              <AccountDropdownMenu anchor="top start" />
-            </Dropdown>
-          </SidebarFooter>
+                    <ChevronUpIcon />
+                  </DropdownButton>
+                  <AccountDropdownMenu anchor="top start" isLogin={isLogin} />
+                </Dropdown>
+              </SidebarFooter>
+            </>
+          ) : (
+            <>
+              <SidebarFooter className="absolute bottom-0 w-full max-lg:hidden">
+                <Dropdown>
+                  <DropdownButton as={SidebarItem}>
+                    <span className="flex min-w-0 items-center gap-3">
+                      <Avatar src="/users/user.jpg" className="size-10" square alt="" />
+                      <span className="min-w-0">
+                        <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">User</span>
+                        <span className="block truncate text-xs/5 font-normal text-zinc-500 dark:text-zinc-400">
+                          User
+                        </span>
+                      </span>
+                    </span>
+                    <ChevronUpIcon />
+                  </DropdownButton>
+                  <AccountDropdownMenu anchor="top start" isLogin={isLogin} />
+                </Dropdown>
+              </SidebarFooter>
+            </>
+          )}
         </Sidebar>
       }
     >
