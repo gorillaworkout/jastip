@@ -6,7 +6,7 @@ import ModalToggleSSR from '@/components/ModalToggleSSR'
 import ModalToggleTrip from '@/components/ModalToggleTrip'
 import { Select } from '@/components/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'
-import { db } from '@/config/firebase'
+import { auth, db } from '@/config/firebase'
 import { RootState } from '@/features/store'
 import { TripData } from '@/interface/interface'
 import { collection, getDocs } from 'firebase/firestore'
@@ -15,7 +15,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setOrders } from '../features/orders/orderSlice'
 import { setTrips } from '@/features/trip/tripSlice'
 import { formatToRupiah } from './expense/page'
-export function Stat({ title, value }: { title: string; value: string;}) {
+import { onAuthStateChanged, User } from 'firebase/auth'
+import { redirect } from 'next/navigation';
+
+
+
+export function Stat({ title, value }: { title: string; value: string; }) {
   return (
     <div>
       <Divider />
@@ -32,15 +37,16 @@ export function Stat({ title, value }: { title: string; value: string;}) {
 export default function Home() {
   const dispatch = useDispatch()
   const allOrders = useSelector((state: RootState) => state.orders.orders)
-  const allTrips = useSelector((state:RootState)=>state.trips.trips)
-  console.log(allOrders, 'allorders')
+  const allTrips = useSelector((state: RootState) => state.trips.trips)
   const [isFetched, setIsFetched] = useState(false) // Local state to track if data is fetched
   const [activeTrip, setActiveTrip] = useState<string>('october')
-  const [income,setIncome]=useState<number>(0)
-  const [totalCustomer,setTotalCustomer]=useState<number>(0)
-  const [totalWeight,setTotalWeight]=useState<string>('')
-  const [kurs,setKurs] = useState<number>(105)
+  const [income, setIncome] = useState<number>(0)
+  const [totalCustomer, setTotalCustomer] = useState<number>(0)
+  const [totalWeight, setTotalWeight] = useState<string>('')
+  const [kurs, setKurs] = useState<number>(105)
+  const [user, setUser] = useState<User | null>(null);
   // Fetching orders from Firestore
+  console.log(allOrders,  ' all orders');
   useEffect(() => {
     if (isFetched) return // Prevent fetching if already done
 
@@ -80,18 +86,16 @@ export default function Home() {
       dispatch(setOrders(order))
 
 
-      const findActiveTrip = order.filter((val,id)=>{
+      const findActiveTrip = order.filter((val, id) => {
         return val.tripName === activeTrip
       })
-      console.log(findActiveTrip, 'find Active trip');
       const findTotalIncome = order.reduce((total, val) => {
         if (val.tripName === activeTrip) {
           return total + val.pricePerKg * val.totalKg * kurs;
         }
         return total; // return the current total when the condition is not met
       }, 0); // Initial value for the accumulator (total) is set to 0
-      
-      console.log(findTotalIncome, 'findTotalIncome', typeof findTotalIncome)
+
       setIncome(findTotalIncome)
       const findTotalCustomer = order.reduce((total, val) => {
         if (val.tripName === activeTrip) {
@@ -106,17 +110,35 @@ export default function Home() {
         return total; // return the current total when the condition is n
       }, 0);
       setTotalWeight(findTotalWeight.toString())
+      setTotalCustomer(findTotalCustomer)
       setIsFetched(true) // Set the flag to true after fetching
     }
 
 
     fetchingOrders()
-  }, [dispatch, allOrders, isFetched,allTrips]) // Add isFetched as a dependency
+  }, [dispatch, allOrders, isFetched, allTrips]) // Add isFetched as a dependency
 
   const handleActiveTrip = (name: string) => {
-    console.log(name, ' active trip')
+    // console.log(name, ' active trip')
     setActiveTrip(name)
   }
+
+  const [mounted, setMounted] = useState(false);
+  // console.log(user, 'user', user?.photoURL)
+  useEffect(() => {
+    setMounted(true);
+
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+        console.log("User photoURL:", currentUser.photoURL);  // Log to verify URL
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
   return (
     <>
       <div className="mt-8 flex w-full items-center justify-between">
@@ -142,10 +164,10 @@ export default function Home() {
         </div>
       </div>
       <div className="mt-4 grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat title="Perkiraan Income" value={formatToRupiah(income)}  />
-        <Stat title="Total Customer" value={totalCustomer.toString()}  />
-        <Stat title="Total Weight" value={totalWeight}  />
-        <Stat title="Kurs Yen" value={kurs.toString()}     />
+        <Stat title="Perkiraan Income" value={formatToRupiah(income)} />
+        <Stat title="Total Customer" value={totalCustomer.toString()} />
+        <Stat title="Total Weight" value={totalWeight} />
+        <Stat title="Kurs Yen" value={kurs.toString()} />
       </div>
       <div className="mt-8 flex w-full justify-end">
         <ModalToggleSSR initialOpen={false} description={'Order'} />

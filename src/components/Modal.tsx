@@ -7,23 +7,16 @@ import { Input } from '@/components/input'
 import { Select } from '@/components/select'
 import { Textarea } from '@/components/textarea'
 import { OrderData } from '@/interface/interface'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/features/store'
 interface ModalProps {
   isOpen: boolean
   toggleModal: () => void
   onSave: (orderData: OrderData) => void // Pass the form data to parent on save
 }
 
-// interface OrderData {
-//   id: string;
-//   name: string
-//   address: string
-//   phone: string
-//   receiveTime: string
-//   pricePerKg: string
-// }
-
-// Modal component
 const Modal: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave }) => {
+  const allTrips = useSelector((state: RootState) => state.trips.trips)
   const [formData, setFormData] = useState<OrderData>({
     id: '',
     name: '',
@@ -71,9 +64,35 @@ const Modal: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave }) => {
               <Input aria-label="Customer Name" name="name" value={formData.name} onChange={handleInputChange} />
             </div>
           </section>
+          <Divider className="my-5" soft />
+          <div>
+          </div>
+
+          <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+            <div className="space-y-1">
+              <Subheading>Customer Trip Month</Subheading>
+            </div>
+            <div>
+              <Select
+                name="period"
+                value={'Select'} // Bind the selected value
+                // onChange={(e) => handleActiveTrip(e.target.value)} // Listen for changes on the select element
+                onChange={handleInputChange}
+              >
+                {allTrips?.map((val, id) => {
+                  return (
+                    <option key={id} value={val.tripName}>
+                      {val.tripName}
+                    </option>
+                  )
+                })}
+              </Select>
+            </div>
+          </section>
+
 
           <Divider className="my-5" soft />
-          
+
           <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
             <div className="space-y-1">
               <Subheading>Customer Detail</Subheading>
@@ -112,7 +131,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave }) => {
               <Subheading>Receive</Subheading>
             </div>
             <div>
-              <Select aria-label="Receive Time" name="receiveTime"  value={formData.receiveTime} onChange={handleInputChange}>
+              <Select aria-label="Receive Time" name="receiveTime" value={formData.receiveTime} onChange={handleInputChange}>
                 <option value="8-12">Select</option>
                 <option value="8-12">8-12</option>
                 <option value="14-16">14-16</option>

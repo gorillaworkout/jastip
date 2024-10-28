@@ -26,7 +26,6 @@ const tripsSlice = createSlice({
         state.trips.push(action.payload)
     },
     setTrips: (state, action: PayloadAction<TripData[]>) => {
-        console.log('settrips is running', action);
         state.trips = action.payload; // Replace all trips with the new array from payload
       },
   },

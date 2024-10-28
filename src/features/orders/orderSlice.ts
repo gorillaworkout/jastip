@@ -28,7 +28,6 @@ const ordersSlice = createSlice({
         state.orders.push(action.payload)
     },
     setOrders: (state, action: PayloadAction<OrderData[]>) => {
-        console.log('setOrders is running', action);
         state.orders = action.payload; // Replace all orders with the new array from payload
       },
   },

@@ -2,10 +2,17 @@
 import { useEffect, useState } from 'react';
 import { signInWithPopup, onAuthStateChanged, signOut, User } from 'firebase/auth';
 import { auth, provider } from '@/config/firebase';
+import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAccount } from '@/features/account/accountSlice';
 
 const Login: React.FC = () => {
+  const dispatch = useDispatch();
   const [user, setUser] = useState<User | null>(null);
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
+
     console.log(user, 'user', user?.photoURL)
   useEffect(() => {
     setMounted(true);
@@ -14,6 +21,7 @@ const Login: React.FC = () => {
       if (currentUser) {
         setUser(currentUser);
         console.log("User photoURL:", currentUser.photoURL);  // Log to verify URL
+           router.push('/');
       } else {
         setUser(null);
       }
@@ -25,6 +33,9 @@ const Login: React.FC = () => {
   const handleLogin = async () => {
     try {
       await signInWithPopup(auth, provider);
+      console.log(auth, 'auth')
+      // dispatch(setAccount(auth))
+      router.push('/');
     } catch (error) {
       console.error("Error logging in:", error);
     }
