@@ -22,7 +22,10 @@ import {
   SidebarSpacer,
 } from '@/components/sidebar'
 import { SidebarLayout } from '@/components/sidebar-layout'
+import { auth } from '@/config/firebase'
 import { getEvents } from '@/data'
+import { clearAccount } from '@/features/account/accountSlice'
+import { RootState } from '@/features/store'
 import {
   ArrowRightStartOnRectangleIcon,
   ChevronDownIcon,
@@ -30,10 +33,24 @@ import {
   Cog8ToothIcon,
 } from '@heroicons/react/16/solid'
 import { Cog6ToothIcon, HomeIcon, Square2StackIcon, TicketIcon } from '@heroicons/react/20/solid'
+import { current } from '@reduxjs/toolkit'
+import { signOut } from 'firebase/auth'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 function AccountDropdownMenu({ anchor, isLogin }: { anchor: 'top start' | 'bottom end'; isLogin: false | true }) {
+  const dispatch = useDispatch()
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      // setUser(null);
+      dispatch(clearAccount())
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
   return (
     <DropdownMenu className="min-w-64" anchor={anchor}>
       {/* <DropdownItem href="#">
@@ -51,12 +68,12 @@ function AccountDropdownMenu({ anchor, isLogin }: { anchor: 'top start' | 'botto
       </DropdownItem> */}
       {/* <DropdownDivider /> */}
       {isLogin ? (
-        <DropdownItem href="#">
+        <DropdownItem onClick={handleLogout}>
           <ArrowRightStartOnRectangleIcon />
           <DropdownLabel>Sign out</DropdownLabel>
         </DropdownItem>
       ) : (
-        <DropdownItem href="#">
+        <DropdownItem href="/login">
           <ArrowRightStartOnRectangleIcon />
           <DropdownLabel>Sign In</DropdownLabel>
         </DropdownItem>
@@ -73,6 +90,7 @@ export function ApplicationLayout({
   children: React.ReactNode
 }) {
   let pathname = usePathname()
+  const currentUser = useSelector((state: RootState) => state.account.account)
   const [isLogin, setIsLogin] = useState<boolean>(false)
   return (
     <SidebarLayout
@@ -84,7 +102,7 @@ export function ApplicationLayout({
               <DropdownButton as={NavbarItem}>
                 <Avatar src="/users/erica.jpg" square />
               </DropdownButton>
-              <AccountDropdownMenu anchor="bottom end" isLogin={isLogin} />
+              <AccountDropdownMenu anchor="bottom end" isLogin={currentUser.displayName !== ''} />
             </Dropdown>
           </NavbarSection>
         </Navbar>
@@ -120,7 +138,7 @@ export function ApplicationLayout({
               </DropdownMenu>
             </Dropdown>
           </SidebarHeader>
-          {isLogin ? (
+          {currentUser.displayName !== '' ? (
             <>
               <SidebarBody>
                 <SidebarSection>
@@ -175,16 +193,16 @@ export function ApplicationLayout({
                       <Avatar src="/users/erica.jpg" className="size-10" square alt="" />
                       <span className="min-w-0">
                         <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">
-                          Bayu Darmawan
+                          {currentUser.displayName}
                         </span>
                         <span className="block truncate text-xs/5 font-normal text-zinc-500 dark:text-zinc-400">
-                          bdarmawan@uxbee.nl
+                          {currentUser.email}
                         </span>
                       </span>
                     </span>
                     <ChevronUpIcon />
                   </DropdownButton>
-                  <AccountDropdownMenu anchor="top start" isLogin={isLogin} />
+                  <AccountDropdownMenu anchor="top start" isLogin={currentUser.displayName !== ''} />
                 </Dropdown>
               </SidebarFooter>
             </>
@@ -204,7 +222,7 @@ export function ApplicationLayout({
                     </span>
                     <ChevronUpIcon />
                   </DropdownButton>
-                  <AccountDropdownMenu anchor="top start" isLogin={isLogin} />
+                  <AccountDropdownMenu anchor="top start" isLogin={currentUser.displayName !== ''} />
                 </Dropdown>
               </SidebarFooter>
             </>

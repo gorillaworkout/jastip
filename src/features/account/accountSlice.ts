@@ -3,12 +3,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface Account {
-    displayName: string
-    email: string
-    emailVerified: boolean
-    phoneNumber: number
-    photo: string
-    uid: string 
+    displayName: string | null
+    email: string | null
+    emailVerified: string | null
+    phoneNumber: string | null
+    photo: string | null
+    uid: string  | null
 }
 
 interface AccountState {
@@ -19,8 +19,8 @@ const initialState: AccountState = {
     account: {
         displayName: '',
         email: '',
-        emailVerified: false,
-        phoneNumber: 0,
+        emailVerified: 'false',
+        phoneNumber: '',
         photo: '',
         uid: '' 
     },
@@ -37,8 +37,8 @@ const accountSlice = createSlice({
             state.account = {
                 displayName: '',
                 email: '',
-                emailVerified: false,
-                phoneNumber: 0,
+                emailVerified: '',
+                phoneNumber: '',
                 photo: '',
                 uid: '' 
             }

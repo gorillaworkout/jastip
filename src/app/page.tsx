@@ -17,6 +17,7 @@ import { setTrips } from '@/features/trip/tripSlice'
 import { formatToRupiah } from './expense/page'
 import { onAuthStateChanged, User } from 'firebase/auth'
 import { redirect } from 'next/navigation';
+import { clearAccount, setAccount } from '@/features/account/accountSlice'
 
 
 
@@ -38,6 +39,7 @@ export default function Home() {
   const dispatch = useDispatch()
   const allOrders = useSelector((state: RootState) => state.orders.orders)
   const allTrips = useSelector((state: RootState) => state.trips.trips)
+  const currentUser = useSelector((state: RootState) => state.account.account)
   const [isFetched, setIsFetched] = useState(false) // Local state to track if data is fetched
   const [activeTrip, setActiveTrip] = useState<string>('october')
   const [income, setIncome] = useState<number>(0)
@@ -104,18 +106,41 @@ export default function Home() {
         return total; // return the current total when the condition is not met
       }, 0); // Initial value for the accumulator (total) is set to 0
       const findTotalWeight = order.reduce((total, val) => {
+        console.log(total, val.totalKg, '107');
         if (val.tripName === activeTrip) {
-          return total + val.totalKg
+          return total + parseInt(val.totalKg)
         }
         return total; // return the current total when the condition is n
       }, 0);
+      console.log(findTotalWeight, 'findtotalweight')
       setTotalWeight(findTotalWeight.toString())
       setTotalCustomer(findTotalCustomer)
       setIsFetched(true) // Set the flag to true after fetching
     }
 
-
     fetchingOrders()
+
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        // setUser(currentUser);
+        console.log("User photoURL:", currentUser.photoURL);  // Log to verify URL
+        let currentAcc = {
+          displayName: currentUser.displayName,
+          email: currentUser.email,
+          emailVerified: currentUser.email,
+          phoneNumber: currentUser.phoneNumber,
+          photo: currentUser.photoURL,
+          uid: currentUser.uid 
+        }
+        dispatch(setAccount(currentAcc))
+      } else {
+        // setUser(null);
+        dispatch(clearAccount())
+      }
+    });
+
+    
+    return () => unsubscribe();
   }, [dispatch, allOrders, isFetched, allTrips]) // Add isFetched as a dependency
 
   const handleActiveTrip = (name: string) => {
@@ -125,24 +150,33 @@ export default function Home() {
 
   const [mounted, setMounted] = useState(false);
   // console.log(user, 'user', user?.photoURL)
-  useEffect(() => {
-    setMounted(true);
+  // useEffect(() => {
+  //   setMounted(true);
 
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-        console.log("User photoURL:", currentUser.photoURL);  // Log to verify URL
-      } else {
-        setUser(null);
-      }
-    });
+  //   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+  //     if (currentUser) {
+  //       // setUser(currentUser);
+  //       console.log("User photoURL:", currentUser.photoURL);  // Log to verify URL
+  //       let currentAcc = {
+  //         displayName: currentUser.displayName,
+  //         email: currentUser.email,
+  //         emailVerified: currentUser.email,
+  //         phoneNumber: currentUser.phoneNumber,
+  //         photo: currentUser.photoURL,
+  //         uid: currentUser.uid 
+  //       }
+  //       dispatch(setAccount(currentAcc))
+  //     } else {
+  //       setUser(null);
+  //     }
+  //   });
 
-    return () => unsubscribe();
-  }, []);
+  //   return () => unsubscribe();
+  // }, []);
   return (
     <>
       <div className="mt-8 flex w-full items-center justify-between">
-        <Heading>Hello, Bayu Darmawan</Heading>
+        <Heading>Hello, {currentUser.displayName}</Heading>
         <ModalToggleTrip initialOpen={false} description={'Trip'} />
       </div>
       <div className="mt-8 flex items-end justify-between">
