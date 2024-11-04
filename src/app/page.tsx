@@ -120,27 +120,27 @@ export default function Home() {
 
     fetchingOrders()
 
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        // setUser(currentUser);
-        console.log("User photoURL:", currentUser.photoURL);  // Log to verify URL
-        let currentAcc = {
-          displayName: currentUser.displayName,
-          email: currentUser.email,
-          emailVerified: currentUser.email,
-          phoneNumber: currentUser.phoneNumber,
-          photo: currentUser.photoURL,
-          uid: currentUser.uid 
-        }
-        dispatch(setAccount(currentAcc))
-      } else {
-        // setUser(null);
-        dispatch(clearAccount())
-      }
-    });
+    // const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    //   if (currentUser) {
+    //     // setUser(currentUser);
+    //     console.log("User photoURL:", currentUser.photoURL);  // Log to verify URL
+    //     let currentAcc = {
+    //       displayName: currentUser.displayName,
+    //       email: currentUser.email,
+    //       emailVerified: currentUser.email,
+    //       phoneNumber: currentUser.phoneNumber,
+    //       photo: currentUser.photoURL,
+    //       uid: currentUser.uid 
+    //     }
+    //     dispatch(setAccount(currentAcc))
+    //   } else {
+    //     // setUser(null);
+    //     dispatch(clearAccount())
+    //   }
+    // });
 
     
-    return () => unsubscribe();
+    // return () => unsubscribe();
   }, [dispatch, allOrders, isFetched, allTrips]) // Add isFetched as a dependency
 
   const handleActiveTrip = (name: string) => {

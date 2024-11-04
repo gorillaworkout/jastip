@@ -33,8 +33,18 @@ export default function Expense() {
   const dispatch = useDispatch()
   const allExpenses = useSelector((state: RootState) => state.expenses.expenses)
   console.log(allExpenses, 'allExpenses')
+  const currentUser = useSelector((state: RootState) => state.account.account)
+  const allTrips = useSelector((state: RootState) => state.trips.trips)
+  const [activeTrip, setActiveTrip] = useState<string>('october')
   const [isFetched, setIsFetched] = useState(false) // Local state to track if data is fetched
+  const [totalExpense, setTotalExpense] = useState<number>(0)
 
+
+  
+  const handleActiveTrip = (name: string) => {
+    // console.log(name, ' active trip')
+    setActiveTrip(name)
+  }
   // Fetching orders from Firestore
   useEffect(() => {
     if (isFetched) return // Prevent fetching if already done
@@ -51,29 +61,45 @@ export default function Expense() {
       }))
       console.log(orderList, 'order List')
       dispatch(setExpenses(orderList))
+      
       setIsFetched(true) // Set the flag to true after fetching
+      const findTotalExpense = orderList.reduce((total, val) => {
+        // console.log(total, val.totalKg, '107');
+        return total + parseInt(val.expense)
+        // if (val.tripName === activeTrip) {
+        // }
+        // return total; // return the current total when the condition is n
+      }, 0);
+      // setTotalExpense(findTotalExpense)
+      console.log(typeof findTotalExpense);
     }
-
     fetchingOrders()
   }, [dispatch, allExpenses, isFetched]) // Add isFetched as a dependency
 
   
   return (
     <>
-      <Heading>Hello, Bayu Darmawan</Heading>
+      <Heading>Hello, {currentUser.displayName}</Heading>
       <div className="mt-8 flex items-end justify-between">
         <Subheading>Expense Overview</Subheading>
         <div>
-          <Select name="period">
-            <option value="september_2024">September 2024</option>
-            <option value="october_2024">October 2024</option>
-            <option value="november_2024">November 2024</option>
-            <option value="desember_2024">December 2024</option>
+          <Select
+            name="period"
+            value={activeTrip} // Bind the selected value
+            onChange={(e) => handleActiveTrip(e.target.value)} // Listen for changes on the select element
+          >
+            {allTrips?.map((val, id) => {
+              return (
+                <option key={id} value={val.tripName}>
+                  {val.tripName}
+                </option>
+              )
+            })}
           </Select>
         </div>
       </div>
       <div className="mt-4 grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat title="Total Expense" value="20.600.000" change="+4.5%" />
+        <Stat title="Total Expense" value={totalExpense.toString()} change="+4.5%" />
         <Stat title="Total Customer" value="20" change="-0.5%" />
         <Stat title="Total Weight" value="20" change="+4.5%" />
         <Stat title="Total Trip" value="12" change="+21.2%" />
