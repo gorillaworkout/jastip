@@ -16,9 +16,7 @@ import { setOrders } from '../features/orders/orderSlice'
 import { setTrips } from '@/features/trip/tripSlice'
 import { formatToRupiah } from './expense/page'
 import { onAuthStateChanged, User } from 'firebase/auth'
-import { redirect } from 'next/navigation';
-import { clearAccount, setAccount } from '@/features/account/accountSlice'
-
+import { useRouter } from 'next/navigation';
 
 
 export function Stat({ title, value }: { title: string; value: string; }) {
@@ -47,6 +45,7 @@ export default function Home() {
   const [totalWeight, setTotalWeight] = useState<string>('')
   const [kurs, setKurs] = useState<number>(105)
   const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
   // Fetching orders from Firestore
   console.log(allOrders,  ' all orders');
   useEffect(() => {
@@ -119,26 +118,6 @@ export default function Home() {
     }
 
     fetchingOrders()
-
-    // const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-    //   if (currentUser) {
-    //     // setUser(currentUser);
-    //     console.log("User photoURL:", currentUser.photoURL);  // Log to verify URL
-    //     let currentAcc = {
-    //       displayName: currentUser.displayName,
-    //       email: currentUser.email,
-    //       emailVerified: currentUser.email,
-    //       phoneNumber: currentUser.phoneNumber,
-    //       photo: currentUser.photoURL,
-    //       uid: currentUser.uid 
-    //     }
-    //     dispatch(setAccount(currentAcc))
-    //   } else {
-    //     // setUser(null);
-    //     dispatch(clearAccount())
-    //   }
-    // });
-
     
     // return () => unsubscribe();
   }, [dispatch, allOrders, isFetched, allTrips]) // Add isFetched as a dependency
@@ -148,31 +127,12 @@ export default function Home() {
     setActiveTrip(name)
   }
 
-  const [mounted, setMounted] = useState(false);
-  // console.log(user, 'user', user?.photoURL)
-  // useEffect(() => {
-  //   setMounted(true);
-
-  //   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-  //     if (currentUser) {
-  //       // setUser(currentUser);
-  //       console.log("User photoURL:", currentUser.photoURL);  // Log to verify URL
-  //       let currentAcc = {
-  //         displayName: currentUser.displayName,
-  //         email: currentUser.email,
-  //         emailVerified: currentUser.email,
-  //         phoneNumber: currentUser.phoneNumber,
-  //         photo: currentUser.photoURL,
-  //         uid: currentUser.uid 
-  //       }
-  //       dispatch(setAccount(currentAcc))
-  //     } else {
-  //       setUser(null);
-  //     }
-  //   });
-
-  //   return () => unsubscribe();
-  // }, []);
+  useEffect(()=>{
+    console.log(currentUser, 'current user');
+    if(currentUser.email === ""){
+      router.push('/login');
+    }
+  },[currentUser])
   return (
     <>
       <div className="mt-8 flex w-full items-center justify-between">
