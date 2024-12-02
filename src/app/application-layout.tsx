@@ -86,7 +86,8 @@ function AccountDropdownMenu({ anchor, isLogin }: { anchor: 'top start' | 'botto
           pricePerKg: doc.data().pricePerKg || 0,
           totalKg: doc.data().totalKg || 0,
           tripName: doc.data().tripName || 'Unknown',
-          detail: doc.data().detail || 'Unknown'
+          detail: doc.data().detail || 'Unknown',
+          uid: doc.data().uid || 'unknown'
         }
       })
       dispatch(setOrders(order))
@@ -110,20 +111,17 @@ function AccountDropdownMenu({ anchor, isLogin }: { anchor: 'top start' | 'botto
         return total; // return the current total when the condition is not met
       }, 0); // Initial value for the accumulator (total) is set to 0
       const findTotalWeight = order.reduce((total, val) => {
-        console.log(total, val.totalKg, '107');
+        // console.log(total, val.totalKg, '107');
         if (val.tripName === activeTrip) {
           return total + parseInt(val.totalKg)
         }
         return total; // return the current total when the condition is n
       }, 0);
-      console.log(findTotalWeight, 'findtotalweight')
+      // console.log(findTotalWeight, 'findtotalweight')
       // setTotalWeight(findTotalWeight.toString())
       // setTotalCustomer(findTotalCustomer)
       // setIsFetched(true) // Set the flag to true after fetching
     }
-
-    fetchingOrders()
-
 
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
@@ -138,6 +136,7 @@ function AccountDropdownMenu({ anchor, isLogin }: { anchor: 'top start' | 'botto
           uid: currentUser.uid 
         }
         dispatch(setAccount(currentAcc))
+        fetchingOrders()
       } else {
         // setUser(null);
         dispatch(clearAccount())

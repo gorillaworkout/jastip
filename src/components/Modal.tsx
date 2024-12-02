@@ -26,7 +26,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave }) => {
     pricePerKg: 0,
     totalKg: 0,
     tripName: '',
-    detail: ''
+    detail: '',
+    uid: ''
   })
 
   if (!isOpen) return null

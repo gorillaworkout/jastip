@@ -71,7 +71,7 @@ export default function Expense() {
         // return total; // return the current total when the condition is n
       }, 0);
       // setTotalExpense(findTotalExpense)
-      console.log(typeof findTotalExpense);
+      // console.log(typeof findTotalExpense);
     }
     fetchingOrders()
   }, [dispatch, allExpenses, isFetched]) // Add isFetched as a dependency

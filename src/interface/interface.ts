@@ -7,7 +7,8 @@ export interface OrderData {
     pricePerKg: number
     totalKg: number
     tripName: string
-    detail:string;
+    detail:string
+    uid: string
   }
 
   export interface TripData {

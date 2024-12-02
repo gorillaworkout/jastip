@@ -20,7 +20,8 @@ const Login: React.FC = () => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
-        console.log("User photoURL:", currentUser.photoURL);  // Log to verify URL
+        console.log(currentUser, 'current user')
+        // console.log("User photoURL:", currentUser.photoURL);  // Log to verify URL
            router.push('/');
       } else {
         setUser(null);

@@ -44,10 +44,9 @@ export default function Home() {
   const [totalCustomer, setTotalCustomer] = useState<number>(0)
   const [totalWeight, setTotalWeight] = useState<string>('')
   const [kurs, setKurs] = useState<number>(105)
-  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   // Fetching orders from Firestore
-  console.log(allOrders,  ' all orders');
+  console.log(allOrders,  ' all orderss');
   useEffect(() => {
     if (isFetched) return // Prevent fetching if already done
 
@@ -81,7 +80,8 @@ export default function Home() {
           pricePerKg: doc.data().pricePerKg || 0,
           totalKg: doc.data().totalKg || 0,
           tripName: doc.data().tripName || 'Unknown',
-          detail: doc.data().detail || 'Unknown'
+          detail: doc.data().detail || 'Unknown',
+          uid : doc.data().uid || 'Unknown'
         }
       })
       dispatch(setOrders(order))
@@ -105,13 +105,12 @@ export default function Home() {
         return total; // return the current total when the condition is not met
       }, 0); // Initial value for the accumulator (total) is set to 0
       const findTotalWeight = order.reduce((total, val) => {
-        console.log(total, val.totalKg, '107');
+        // console.log(total, val.totalKg, '107');
         if (val.tripName === activeTrip) {
           return total + parseInt(val.totalKg)
         }
         return total; // return the current total when the condition is n
       }, 0);
-      console.log(findTotalWeight, 'findtotalweight')
       setTotalWeight(findTotalWeight.toString())
       setTotalCustomer(findTotalCustomer)
       setIsFetched(true) // Set the flag to true after fetching
@@ -128,7 +127,7 @@ export default function Home() {
   }
 
   useEffect(()=>{
-    console.log(currentUser, 'current user');
+    // console.log(allOrders,  'all orders');
     if(currentUser.email === ""){
       router.push('/login');
     }
