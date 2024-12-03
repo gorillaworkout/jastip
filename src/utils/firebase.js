@@ -14,4 +14,10 @@ const addTripFirebase = async (formData)=>{
     await addDoc(collectionRef,formData)
 }
 
- export { addPost, addTripFirebase }
+const addExpenseFirebase = async (formData)=>{
+    console.log('add expense is running')
+    const collectionRef = collection(db, 'expense')
+    await addDoc(collectionRef,formData)
+}
+
+ export { addPost, addTripFirebase, addExpenseFirebase }

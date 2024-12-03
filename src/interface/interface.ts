@@ -19,3 +19,10 @@ export interface OrderData {
     tripDate: string;
   }
   
+  export interface ExpenseData { 
+    id: string
+    description: string
+    expense: number
+    bank: string
+    uid: string
+  }

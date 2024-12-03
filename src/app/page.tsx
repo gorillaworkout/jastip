@@ -46,11 +46,11 @@ export default function Home() {
   const [kurs, setKurs] = useState<number>(105)
   const router = useRouter();
   // Fetching orders from Firestore
-  console.log(allOrders,  ' all orderss');
+  // console.log(allOrders,  ' all orderss');
   useEffect(() => {
     if (isFetched) return // Prevent fetching if already done
 
-    console.log('Fetching orders from Firestore...')
+    console.log('Fetching orders from Firestore...', currentUser)
     const fetchingOrders = async () => {
       // fetch all trip
       const collectionTrip = collection(db, 'trip')
@@ -69,29 +69,25 @@ export default function Home() {
       const collectionRef = collection(db, 'orders')
       const orderCollectionSnapshot = await getDocs(collectionRef)
 
-      const order = orderCollectionSnapshot.docs.map((doc) => {
-        // Logging the trip name for debugging
-        return {
-          id: doc.data().id || 'Error Id',
-          name: doc.data().name || 'Unknown',
-          address: doc.data().address || '',
-          phone: doc.data().phone || '',
-          receiveTime: doc.data().receiveTime || '',
-          pricePerKg: doc.data().pricePerKg || 0,
-          totalKg: doc.data().totalKg || 0,
-          tripName: doc.data().tripName || 'Unknown',
-          detail: doc.data().detail || 'Unknown',
-          uid : doc.data().uid || 'Unknown'
-        }
-      })
+      const order = orderCollectionSnapshot.docs
+      .filter((doc) => doc.data().uid === currentUser.uid) // Filter only matching documents
+      .map((doc) => ({
+        id: doc.data().id || 'Error Id',
+        name: doc.data().name || 'Unknown',
+        address: doc.data().address || '',
+        phone: doc.data().phone || '',
+        receiveTime: doc.data().receiveTime || '',
+        pricePerKg: doc.data().pricePerKg || 0,
+        totalKg: doc.data().totalKg || 0,
+        tripName: doc.data().tripName || 'Unknown',
+        detail: doc.data().detail || 'Unknown',
+        uid: doc.data().uid || 'Unknown',
+      }));
+    
       dispatch(setOrders(order))
 
-
-      const findActiveTrip = order.filter((val, id) => {
-        return val.tripName === activeTrip
-      })
       const findTotalIncome = order.reduce((total, val) => {
-        if (val.tripName === activeTrip) {
+        if (val?.tripName === activeTrip) {
           return total + val.pricePerKg * val.totalKg * kurs;
         }
         return total; // return the current total when the condition is not met
@@ -99,14 +95,14 @@ export default function Home() {
 
       setIncome(findTotalIncome)
       const findTotalCustomer = order.reduce((total, val) => {
-        if (val.tripName === activeTrip) {
+        if (val?.tripName === activeTrip) {
           return total + 1
         }
         return total; // return the current total when the condition is not met
       }, 0); // Initial value for the accumulator (total) is set to 0
       const findTotalWeight = order.reduce((total, val) => {
         // console.log(total, val.totalKg, '107');
-        if (val.tripName === activeTrip) {
+        if (val?.tripName === activeTrip) {
           return total + parseInt(val.totalKg)
         }
         return total; // return the current total when the condition is n
@@ -184,7 +180,7 @@ export default function Home() {
             .slice() // Use slice to create a shallow copy to avoid mutating the original array
             .sort((a, b) => parseInt(a.id) - parseInt(b.id)) // Sort orders by ID in ascending order
             .map((order) => {
-              if (order.tripName === activeTrip) {
+              if (order?.tripName === activeTrip) {
                 return (
                   // <TableRow key={order.id} href={'/orders/3000'} title={`Order #${order.id}`}>
                   <TableRow key={order.id}>
