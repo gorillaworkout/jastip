@@ -38,6 +38,7 @@ const ModalExpense: React.FC<ModalExpenseProps> = ({ initialOpen , description})
       description: expenseData.description,
       expense: Number(expenseData.expense),
       bank: expenseData.bank,
+      date: expenseData.date,
       uid: currentUser.uid !== null ? currentUser.uid : ''
     }
     addExpenseFirebase(finalExpenseData)

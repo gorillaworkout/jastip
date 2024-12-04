@@ -62,6 +62,7 @@ export default function Expense() {
         description: doc.data().description || 'Unknown',
         expense: doc.data().expense || 0,
         bank: doc.data().bank || '',
+        date: doc.data().date || '',
         uid : doc.data().uid || ''
       }));
       dispatch(setExpenses(expenseList))
@@ -116,6 +117,7 @@ export default function Expense() {
             <TableHeader>ID</TableHeader>
             <TableHeader>Description</TableHeader>
             <TableHeader>Expense</TableHeader>
+            <TableHeader>Date</TableHeader>
             <TableHeader className="text-right">Bank</TableHeader>
           </TableRow>
         </TableHead>
@@ -129,6 +131,7 @@ export default function Expense() {
                 <TableCell>{order.id}</TableCell>
                 <TableCell>{order.description}</TableCell>
                 <TableCell>{formatToRupiah(order?.expense)}</TableCell>
+                <TableCell>{order.date}</TableCell>
                 <TableCell className="text-right">{order.bank}</TableCell>
               </TableRow>
             ))}

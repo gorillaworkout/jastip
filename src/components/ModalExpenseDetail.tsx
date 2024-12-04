@@ -13,19 +13,18 @@ interface ModalProps {
 }
 
 const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave }) => {
+
+  const today = new Date().toISOString().split('T')[0];
   const [formData, setFormData] = useState<ExpenseData>({
     id: '',
     description: '',
     expense: 0,
     bank: '',
+    date:today,
     uid: '', // Add tripDate to form data
   })
   const [isActiveButton, setIsActiveButton] = useState(false)
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
-  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,6 +36,7 @@ const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave 
       description: '',
       expense: 0,
       bank: '',
+      date:'',
       uid: '',
     })
   }
@@ -45,6 +45,25 @@ const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave 
     setIsActiveButton(formData.description !== '' && formData.expense !== 0 && formData.bank !== '')
   }, [formData])
 
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+
+    if (name === 'expense') {
+      const rawValue = Number(value.replace(/[^0-9]/g, '')); // Remove non-numeric characters
+      setFormData({ ...formData, expense: rawValue }); // Update raw numeric value
+      return; // Skip setting formatted value directly
+    }
+
+    setFormData({ ...formData, [name]: value });
+  };
+  const formatToRupiah = (number: string | number) => {
+    return new Intl.NumberFormat('id-ID', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(Number(number) || 0); // Format with dots as separators
+  };
   return (
     <div className="modal-overlay z-50" style={{ ...overlayStyle, display: isOpen ? 'flex' : 'none' }}>
       <div className="modal-content w-1/2" style={modalStyle}>
@@ -80,9 +99,10 @@ const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave 
             </div>
             <div>
               <Input
-                aria-label="Exepense"
-                name="expense" // Updated name attribute
-                value={formData.expense}
+                aria-label="Expense"
+                name="expense"
+                id="expenseInput"
+                value={formData.expense ? formatToRupiah(formData.expense) : ''} // Display formatted value
                 onChange={handleInputChange}
               />
             </div>
@@ -99,6 +119,22 @@ const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave 
                 aria-label="Bank"
                 name="bank" // Updated name attribute
                 value={formData.bank}
+                onChange={handleInputChange}
+              />
+            </div>
+          </section>
+
+          <Divider className="my-5" soft />
+          <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+            <div className="space-y-1">
+              <Subheading>Date</Subheading>
+            </div>
+            <div>
+              <Input
+                type="date"
+                aria-label="Date"
+                name="date" // Updated name attribute
+                value={formData.date}
                 onChange={handleInputChange}
               />
             </div>

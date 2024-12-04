@@ -24,5 +24,6 @@ export interface OrderData {
     description: string
     expense: number
     bank: string
+    date: string
     uid: string
   }
