@@ -95,7 +95,7 @@ const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave 
 
           <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
             <div className="space-y-1">
-              <Subheading>Expense</Subheading>
+              <Subheading>Nominal</Subheading>
             </div>
             <div>
               <Input

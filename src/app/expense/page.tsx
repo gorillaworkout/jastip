@@ -11,7 +11,6 @@ import { collection, getDocs } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setExpenses } from '../../features/expense/expenseSlice'
-import { start } from 'repl'
 
 export function Stat({ title, value, change }: { title: string; value: string; change: string }) {
   return (
@@ -140,6 +139,7 @@ export default function Expense() {
       }));
   
     // Dispatch filtered expenses to Redux
+    console.log(expenseList, 'expese List');
     dispatch(setExpenses(expenseList));
 
     setIsFetched(true); // Set the flag to true after fetching

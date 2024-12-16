@@ -245,7 +245,7 @@ export function ApplicationLayout({
                     <Square2StackIcon />
                     <SidebarLabel>Expense</SidebarLabel>
                   </SidebarItem>
-                  <SidebarItem href="/events" current={pathname.startsWith('/events')}>
+                  {/* <SidebarItem href="/events" current={pathname.startsWith('/events')}>
                     <Square2StackIcon />
                     <SidebarLabel>Events</SidebarLabel>
                   </SidebarItem>
@@ -256,10 +256,11 @@ export function ApplicationLayout({
                   <SidebarItem href="/settings" current={pathname.startsWith('/settings')}>
                     <Cog6ToothIcon />
                     <SidebarLabel>Settings</SidebarLabel>
-                  </SidebarItem>
+                  </SidebarItem> */}
                 </SidebarSection>
 
-                <SidebarSection className="max-lg:hidden">
+                {/* upcoming events */}
+                {/* <SidebarSection className="max-lg:hidden">
                   <SidebarHeading>Upcoming Events</SidebarHeading>
                   {events.map((event) => (
                     <SidebarItem key={event.id} href={event.url}>
@@ -268,7 +269,9 @@ export function ApplicationLayout({
                   ))}
                 </SidebarSection>
 
-                <SidebarSpacer />
+                <SidebarSpacer /> */}
+
+                {/* upcoming events */}
                 {/* 
             <SidebarSection>
               <SidebarItem href="#">
