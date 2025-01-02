@@ -1,14 +1,21 @@
-import { Button } from '@/components/button'
+'use client'
 import { Divider } from '@/components/divider'
 import { Heading, Subheading } from '@/components/heading'
 import { Text } from '@/components/text'
-import type { Metadata } from 'next'
-import { Cog6ToothIcon, PlusIcon, } from '@heroicons/react/20/solid'
-export const metadata: Metadata = {
-  title: 'Settings',
-}
+// import type { Metadata } from 'next'
+import { PlusIcon } from '@heroicons/react/20/solid'
+import { SetStateAction, useState } from 'react'
+// export const metadata: Metadata = {
+//   title: 'Settings',
+// }
 
 export default function Settings() {
+  const [inputValue, setInputValue] = useState('')
+
+  const handleInputChange = (e: { target: { value: SetStateAction<string> } }) => {
+    setInputValue(e.target.value)
+  }
+
   return (
     <form method="post" className="mx-auto max-w-4xl">
       <Heading>Settings</Heading>
@@ -20,14 +27,15 @@ export default function Settings() {
           <Text>This will be displayed on your expense.</Text>
         </div>
         <div className="flex flex-row gap-2">
-            <PlusIcon className="w-4 text-gray-300"/>   
           <input
             aria-label="Sub Category"
             name="name"
-            // defaultValue="Jastip"
             placeholder="Add Sub Category"
-            className="w-1/2 border-transparent bg-transparent focus:border-transparent focus:outline-none focus:ring-0 active:border-transparent placeholder:text-gray-300"
+            value={inputValue}
+            onChange={handleInputChange}
+            className="w-auto border-t-transparent bg-transparent placeholder:text-gray-300 focus:border-t-transparent !border-b-2 focus:outline-none focus:ring-0 active:border-t-transparent"
           />
+          {inputValue.trim() && <PlusIcon className="w-4 text-gray-300 hover:cursor-pointer" />}
         </div>
       </section>
 
