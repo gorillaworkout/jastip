@@ -2,7 +2,7 @@
 "use client"
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-interface Account {
+export interface Account {
     displayName: string | null
     email: string | null
     emailVerified: string | null

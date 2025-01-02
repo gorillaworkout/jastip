@@ -1,15 +1,21 @@
 'use client'
 import { Divider } from '@/components/divider'
 import { Heading, Subheading } from '@/components/heading'
+import { Input } from '@/components/input'
 import { Text } from '@/components/text'
+import { RootState } from '@/features/store'
 // import type { Metadata } from 'next'
-import { PlusIcon } from '@heroicons/react/20/solid'
+import { PlusCircleIcon } from '@heroicons/react/20/solid'
+import { TrashIcon } from '@heroicons/react/24/outline'
 import { SetStateAction, useState } from 'react'
+import { useSelector } from 'react-redux'
+import settingSlice from './../../features/setting/settingSlice';
 // export const metadata: Metadata = {
 //   title: 'Settings',
 // }
 
 export default function Settings() {
+  const subcategory = useSelector((state: RootState) => state.setting.subcategory)
   const [inputValue, setInputValue] = useState('')
 
   const handleInputChange = (e: { target: { value: SetStateAction<string> } }) => {
@@ -26,16 +32,31 @@ export default function Settings() {
           <Subheading>Sub Category</Subheading>
           <Text>This will be displayed on your expense.</Text>
         </div>
-        <div className="flex flex-row gap-2">
-          <input
+        <div className="flex flex-col">
+          {
+            subcategory.map((val,id)=>{
+              return (
+                <>
+                  <div className="flex flex-row gap-x-4">
+                    <p className="w-[205px]">{val.name}</p> 
+                    <TrashIcon className="w-4 hover:cursor-pointer"/>
+                  </div>
+                </>
+              )
+            })
+          }
+        </div>
+        <div className="flex flex-row gap-x-4">
+          <Input
             aria-label="Sub Category"
             name="name"
             placeholder="Add Sub Category"
             value={inputValue}
             onChange={handleInputChange}
-            className="w-auto border-t-transparent bg-transparent placeholder:text-gray-300 focus:border-t-transparent !border-b-2 focus:outline-none focus:ring-0 active:border-t-transparent"
+            className="w-[200px] bg-transparent placeholder:text-gray-300 focus:border-t-transparent  focus:outline-none focus:ring-0 active:border-t-transparent"
           />
-          {inputValue.trim() && <PlusIcon className="w-4 text-gray-300 hover:cursor-pointer" />}
+        <PlusCircleIcon className="w-6 text-gray-300 hover:cursor-pointer" />
+          
         </div>
       </section>
 

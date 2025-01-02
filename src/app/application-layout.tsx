@@ -15,11 +15,9 @@ import {
   SidebarBody,
   SidebarFooter,
   SidebarHeader,
-  SidebarHeading,
   SidebarItem,
   SidebarLabel,
   SidebarSection,
-  SidebarSpacer,
 } from '@/components/sidebar'
 import { SidebarLayout } from '@/components/sidebar-layout'
 import { auth, db } from '@/config/firebase'
@@ -34,118 +32,71 @@ import {
   ChevronUpIcon,
   Cog8ToothIcon,
 } from '@heroicons/react/16/solid'
-import { Cog6ToothIcon, HomeIcon, Square2StackIcon, TicketIcon } from '@heroicons/react/20/solid'
-import { current } from '@reduxjs/toolkit'
+import { Cog6ToothIcon, HomeIcon, Square2StackIcon } from '@heroicons/react/20/solid'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { collection, getDocs } from 'firebase/firestore'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
+import { fetchFirebase } from './page'
+import { setSubcategory } from '@/features/setting/settingSlice'
 function AccountDropdownMenu({ anchor, isLogin }: { anchor: 'top start' | 'bottom end'; isLogin: false | true }) {
   const dispatch = useDispatch()
+  const currentUser = useSelector((state: RootState) => state.account.account)
   const [activeTrip, setActiveTrip] = useState<string>('october')
   const [kurs, setKurs] = useState<number>(105)
+  const [isFetched, setIsFetched] = useState(false) // Local state to track if data is fetched
   const handleLogout = async () => {
     try {
-      await signOut(auth);
+      await signOut(auth)
       // setUser(null);
       dispatch(clearAccount())
     } catch (error) {
-      console.error("Error logging out:", error);
+      console.error('Error logging out:', error)
     }
-  };
+  }
 
-  useEffect(()=>{
-    const fetchingOrders = async () => {
-      // fetch all trip
-      const collectionTrip = collection(db, 'trip')
-      const tripCollectionSnapshot = await getDocs(collectionTrip)
-
-      const tripList = tripCollectionSnapshot.docs.map((doc) => ({
-        id: doc.data().id || 'Error Id',
-        tripName: doc.data().tripName || 'Unknown',
-        tripWeight: doc.data().tripWeight || 'Unknown',
-        tripRoute: doc.data().tripRoute || 'Unknown',
-        tripDate: doc.data().tripDate || 'Unknown'
-      }))
-      dispatch(setTrips(tripList))
-      // fetch all trip
-
-      const collectionRef = collection(db, 'orders')
-      const orderCollectionSnapshot = await getDocs(collectionRef)
-
-      const order = orderCollectionSnapshot.docs.map((doc) => {
-        // Logging the trip name for debugging
-        return {
-          id: doc.data().id || 'Error Id',
-          name: doc.data().name || 'Unknown',
-          address: doc.data().address || '',
-          phone: doc.data().phone || '',
-          receiveTime: doc.data().receiveTime || '',
-          pricePerKg: doc.data().pricePerKg || 0,
-          totalKg: doc.data().totalKg || 0,
-          tripName: doc.data().tripName || 'Unknown',
-          detail: doc.data().detail || 'Unknown',
-          uid: doc.data().uid || 'unknown'
+  useEffect(() => {
+      const fetchData = async () => {
+          if (isFetched) return // Prevent fetching if already done
+      
+          console.log('Fetching orders from Firestore...', currentUser)
+      
+          try {
+            const result = await fetchFirebase(currentUser)
+            console.log(result, 'all fetch')  // This will now show the fetched data
+            setIsFetched(result.fetching)
+            dispatch(setTrips(result.trip))
+            dispatch(setOrders(result.orders))
+            dispatch(setSubcategory(result.subcategory))
+          } catch (error) {
+            console.error('Error fetching data:', error)
+          }
         }
-      })
-      dispatch(setOrders(order))
-
-
-      const findActiveTrip = order.filter((val, id) => {
-        return val.tripName === activeTrip
-      })
-      const findTotalIncome = order.reduce((total, val) => {
-        if (val.tripName === activeTrip) {
-          return total + val.pricePerKg * val.totalKg * kurs;
-        }
-        return total; // return the current total when the condition is not met
-      }, 0); // Initial value for the accumulator (total) is set to 0
-
-      // setIncome(findTotalIncome)
-      const findTotalCustomer = order.reduce((total, val) => {
-        if (val.tripName === activeTrip) {
-          return total + 1
-        }
-        return total; // return the current total when the condition is not met
-      }, 0); // Initial value for the accumulator (total) is set to 0
-      const findTotalWeight = order.reduce((total, val) => {
-        // console.log(total, val.totalKg, '107');
-        if (val.tripName === activeTrip) {
-          return total + parseInt(val.totalKg)
-        }
-        return total; // return the current total when the condition is n
-      }, 0);
-      // console.log(findTotalWeight, 'findtotalweight')
-      // setTotalWeight(findTotalWeight.toString())
-      // setTotalCustomer(findTotalCustomer)
-      // setIsFetched(true) // Set the flag to true after fetching
-    }
-
+      
+        fetchData()
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         // setUser(currentUser);
-        console.log("User photoURL:", currentUser.photoURL);  // Log to verify URL
+        console.log('User photoURL:', currentUser.photoURL) // Log to verify URL
         let currentAcc = {
           displayName: currentUser.displayName,
           email: currentUser.email,
           emailVerified: currentUser.email,
           phoneNumber: currentUser.phoneNumber,
           photo: currentUser.photoURL,
-          uid: currentUser.uid 
+          uid: currentUser.uid,
         }
         dispatch(setAccount(currentAcc))
-        fetchingOrders()
+        fetchData()
       } else {
         // setUser(null);
         dispatch(clearAccount())
       }
-    });
+    })
 
-    
-    return () => unsubscribe();
-  },[dispatch])
+    return () => unsubscribe()
+  }, [dispatch])
   return (
     <DropdownMenu className="min-w-64" anchor={anchor}>
       {/* <DropdownItem href="#">

@@ -49,9 +49,6 @@ const ModalToggleSSR: React.FC<ModalToggleSSRProps> = ({ initialOpen , descripti
     dispatch(addOrder(finalOrderData))
   }
 
-  useEffect(() => {
-    console.log(order, 'order') // Log the latest order
-  }, [order])
 
   return (
     <>

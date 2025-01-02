@@ -43,10 +43,6 @@ const ModalToggleTrip: React.FC<ModalToggleSSRProps> = ({ initialOpen , descript
     dispatch(addTrip(finalTripData))
   }
 
-  useEffect(() => {
-    console.log(trip, 'trip') // Log the latest trip
-  }, [trip])
-
   return (
     <>
       <div>
