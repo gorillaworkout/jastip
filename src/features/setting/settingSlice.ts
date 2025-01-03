@@ -20,6 +20,9 @@ const settingSlice = createSlice({
     name: 'setting',
     initialState,
     reducers: {
+        addSubcategory: (state, action: PayloadAction<SubCategory>) => {
+            state.subcategory.push(action.payload)
+        },
         setSubcategory: (state, action: PayloadAction<SubCategory[]>) => {
             state.subcategory = action.payload
         },
@@ -29,5 +32,5 @@ const settingSlice = createSlice({
     },
 })
 
-export const { setSubcategory, clearSubcategory } = settingSlice.actions
+export const { setSubcategory, clearSubcategory,addSubcategory } = settingSlice.actions
 export default settingSlice.reducer

@@ -3,23 +3,65 @@ import { Divider } from '@/components/divider'
 import { Heading, Subheading } from '@/components/heading'
 import { Input } from '@/components/input'
 import { Text } from '@/components/text'
+import { db } from '@/config/firebase'
+import { addSubcategory, setSubcategory } from '@/features/setting/settingSlice'
 import { RootState } from '@/features/store'
+import { addSubcategoryFirebase, deleteSubcategory } from '@/utils/firebase'
 // import type { Metadata } from 'next'
 import { PlusCircleIcon } from '@heroicons/react/20/solid'
 import { TrashIcon } from '@heroicons/react/24/outline'
-import { SetStateAction, useState } from 'react'
-import { useSelector } from 'react-redux'
-import settingSlice from './../../features/setting/settingSlice';
+import { collection, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore'
+import { SetStateAction, useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+
 // export const metadata: Metadata = {
 //   title: 'Settings',
 // }
 
 export default function Settings() {
+  const dispatch = useDispatch()
   const subcategory = useSelector((state: RootState) => state.setting.subcategory)
+  const currentUser = useSelector((state: RootState) => state.account.account)
   const [inputValue, setInputValue] = useState('')
-
+  const [isActiveButton, setIsActiveButton] = useState(false)
   const handleInputChange = (e: { target: { value: SetStateAction<string> } }) => {
     setInputValue(e.target.value)
+  }
+
+  useEffect(() => {
+    setIsActiveButton(inputValue !== '')
+  }, [inputValue])
+
+  const onSaveSubcategory = async () => {
+    // dispatch(setSubcategory(inputValue))
+    const collectionRef = collection(db, 'subcategory')
+    const orderCollectionSnapshot = await getDocs(collectionRef)
+    const subcategoryList = orderCollectionSnapshot.docs.map(doc=>({
+        ...doc.data()
+      }))
+      
+    const newSubcategory= {
+      id: `subcat-${subcategoryList.length + 1}`,
+      name : inputValue,
+      uid : currentUser.uid !== null ? currentUser.uid : ''
+    }
+    
+
+    addSubcategoryFirebase(newSubcategory)
+    dispatch(addSubcategory(newSubcategory))
+    setInputValue('')
+  }
+
+  const onDeleteSubcategory=async(id:string)=>{
+    await deleteSubcategory(id)
+    const collectionRef = collection(db, 'subcategory')
+    const orderCollectionSnapshot = await getDocs(collectionRef)
+    const subCategory = orderCollectionSnapshot.docs.map((doc) => ({
+      id: doc.data().id || 'Error Id',
+      name: doc.data().name || 'Unknown',
+      uid: doc.data().uid || 'Unknown',
+    }))
+    dispatch(setSubcategory(subCategory))
   }
 
   return (
@@ -33,18 +75,16 @@ export default function Settings() {
           <Text>This will be displayed on your expense.</Text>
         </div>
         <div className="flex flex-col">
-          {
-            subcategory.map((val,id)=>{
-              return (
-                <>
-                  <div className="flex flex-row gap-x-4">
-                    <p className="w-[205px]">{val.name}</p> 
-                    <TrashIcon className="w-4 hover:cursor-pointer"/>
-                  </div>
-                </>
-              )
-            })
-          }
+          {subcategory.map((val, id) => {
+            return (
+              <>
+                <div className="flex flex-row gap-x-4">
+                  <p className="w-[205px]">{val.name}</p>
+                  <TrashIcon className="w-4 hover:cursor-pointer" onClick={()=>onDeleteSubcategory(val.id !== null ? val.id : '')} />
+                </div>
+              </>
+            )
+          })}
         </div>
         <div className="flex flex-row gap-x-4">
           <Input
@@ -53,10 +93,12 @@ export default function Settings() {
             placeholder="Add Sub Category"
             value={inputValue}
             onChange={handleInputChange}
-            className="w-[200px] bg-transparent placeholder:text-gray-300 focus:border-t-transparent  focus:outline-none focus:ring-0 active:border-t-transparent"
+            className="!w-[200px] bg-transparent placeholder:text-gray-300 focus:border-t-transparent focus:outline-none focus:ring-0 active:border-t-transparent"
           />
-        <PlusCircleIcon className="w-6 text-gray-300 hover:cursor-pointer" />
-          
+          <PlusCircleIcon
+            onClick={isActiveButton ? onSaveSubcategory : undefined}
+            className={`w-6 text-gray-300 hover:cursor-pointer ${isActiveButton ? 'text-white' : 'text-gray-400 hover:cursor-not-allowed'}`}
+          />
         </div>
       </section>
 
