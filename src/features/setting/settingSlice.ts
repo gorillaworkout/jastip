@@ -3,9 +3,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface SubCategory {
-    id: string | null
-    name: string | null
-    uid: string  | null
+    id: string 
+    name: string 
+    uid: string  
 }
 
 interface SubCategoryState {

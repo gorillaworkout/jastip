@@ -3,8 +3,11 @@ import { Button } from '@/components/button'
 import { Divider } from '@/components/divider'
 import { Heading, Subheading } from '@/components/heading'
 import { Input } from '@/components/input'
+import { Select } from '@/components/select'
+import { RootState } from '@/features/store'
 import { ExpenseData } from '@/interface/interface'
 import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 interface ModalProps {
   isOpen: boolean
@@ -13,19 +16,19 @@ interface ModalProps {
 }
 
 const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave }) => {
-
-  const today = new Date().toISOString().split('T')[0];
+  const dispatch = useDispatch()
+  const subcategory = useSelector((state: RootState) => state.setting.subcategory)
+  const today = new Date().toISOString().split('T')[0]
   const [formData, setFormData] = useState<ExpenseData>({
     id: '',
     description: '',
     expense: 0,
     bank: '',
-    date:today,
+    date: today,
     uid: '', // Add tripDate to form data
   })
   const [isActiveButton, setIsActiveButton] = useState(false)
-
-
+  const [activeSubCategory, setActiveSubCategory] = useState<string>('october')
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Pass the form data (including tripDate) to the parent component
@@ -36,7 +39,7 @@ const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave 
       description: '',
       expense: 0,
       bank: '',
-      date:'',
+      date: '',
       uid: '',
     })
   }
@@ -45,25 +48,28 @@ const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave 
     setIsActiveButton(formData.description !== '' && formData.expense !== 0 && formData.bank !== '')
   }, [formData])
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
 
     if (name === 'expense') {
-      const rawValue = Number(value.replace(/[^0-9]/g, '')); // Remove non-numeric characters
-      setFormData({ ...formData, expense: rawValue }); // Update raw numeric value
-      return; // Skip setting formatted value directly
+      const rawValue = Number(value.replace(/[^0-9]/g, '')) // Remove non-numeric characters
+      setFormData({ ...formData, expense: rawValue }) // Update raw numeric value
+      return // Skip setting formatted value directly
     }
 
-    setFormData({ ...formData, [name]: value });
-  };
+    setFormData({ ...formData, [name]: value })
+  }
   const formatToRupiah = (number: string | number) => {
     return new Intl.NumberFormat('id-ID', {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(Number(number) || 0); // Format with dots as separators
-  };
+    }).format(Number(number) || 0) // Format with dots as separators
+  }
+
+  const handleActiveTrip = (name: string) => {
+    setActiveSubCategory(name)
+  }
+
   return (
     <div className="modal-overlay z-50" style={{ ...overlayStyle, display: isOpen ? 'flex' : 'none' }}>
       <div className="modal-content w-1/2" style={modalStyle}>
@@ -109,7 +115,28 @@ const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave 
           </section>
 
           <Divider className="my-5" soft />
+          <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+            <div className="space-y-1">
+              <Subheading>Sub Category</Subheading>
+            </div>
+            <div>
+              <Select
+                name="period"
+                value={activeSubCategory} // Bind the selected value
+                onChange={(e) => handleActiveTrip(e.target.value)} // Listen for changes on the select element
+              >
+                {subcategory.map((val, id) => {
+                  return (
+                    <option key={id} value={val.name}>
+                      {val.name}
+                    </option>
+                  )
+                })}
+              </Select>
+            </div>
+          </section>
 
+          <Divider className="my-5" soft />
           <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
             <div className="space-y-1">
               <Subheading>Bank</Subheading>
