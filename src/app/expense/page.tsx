@@ -62,6 +62,7 @@ export default function Expense() {
           id: doc.data().id || 'Error Id',
           description: doc.data().description || 'Unknown',
           expense: doc.data().expense || 0,
+          subcategory:doc.data().SubCategory || '',
           bank: doc.data().bank || '',
           date: doc.data().date || '',
           uid: doc.data().uid || ''
@@ -133,6 +134,7 @@ export default function Expense() {
         id: doc.data().id || 'Error Id',
         description: doc.data().description || 'Unknown',
         expense: doc.data().expense || 0,
+        subcategory: doc.data().subcategory || '',
         bank: doc.data().bank || '',
         date: doc.data().date || '',
         uid: doc.data().uid || ''

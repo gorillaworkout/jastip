@@ -1,7 +1,7 @@
 'use client'
 import { Button } from '@/components/button'
 import { Divider } from '@/components/divider'
-import { Heading, Subheading } from '@/components/heading'
+import { Heading, Subheading } from '@/components/heading' 
 import { Input } from '@/components/input'
 import { Select } from '@/components/select'
 import { RootState } from '@/features/store'
@@ -23,6 +23,7 @@ const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave 
     id: '',
     description: '',
     expense: 0,
+    subcategory:'',
     bank: '',
     date: today,
     uid: '', // Add tripDate to form data
@@ -37,6 +38,7 @@ const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave 
     setFormData({
       id: '',
       description: '',
+      subcategory:'',
       expense: 0,
       bank: '',
       date: '',
