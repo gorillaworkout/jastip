@@ -227,6 +227,7 @@ export default function Expense() {
             <TableHeader>ID</TableHeader>
             <TableHeader>Description</TableHeader>
             <TableHeader>Expense</TableHeader>
+            <TableHeader>Subcategory</TableHeader>
             <TableHeader>Date</TableHeader>
             <TableHeader className="text-right">Bank</TableHeader>
           </TableRow>
@@ -241,6 +242,7 @@ export default function Expense() {
                 <TableCell>{order.id}</TableCell>
                 <TableCell>{order.description}</TableCell>
                 <TableCell>{formatToRupiah(order?.expense)}</TableCell>
+                <TableCell>{order.subcategory}</TableCell>
                 <TableCell>{formatDate(order.date)}</TableCell>
                 <TableCell className="text-right">{order.bank}</TableCell>
               </TableRow>

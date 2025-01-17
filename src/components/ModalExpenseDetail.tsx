@@ -8,6 +8,8 @@ import { RootState } from '@/features/store'
 import { ExpenseData } from '@/interface/interface'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import ComboboxInputField from './combobox'
+import { SubCategory } from '@/features/setting/settingSlice'
 
 interface ModalProps {
   isOpen: boolean
@@ -51,6 +53,7 @@ const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave 
   }, [formData])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    console.log(e, 'e')
     const { name, value } = e.target
 
     if (name === 'expense') {
@@ -68,9 +71,19 @@ const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave 
     }).format(Number(number) || 0) // Format with dots as separators
   }
 
-  const handleActiveTrip = (name: string) => {
-    setActiveSubCategory(name)
+  const handleActiveTrip = (subcategory: SubCategory | null) => {
+    if(subcategory !== null){
+      setFormData((prevFormData) => ({
+        ...prevFormData, // Spread the previous state
+        subcategory: subcategory.name, // Update only the subcategory field
+      }));
+      console.log(name, 'handle active trip');
+    }
   }
+
+  useEffect(()=>{
+    console.log(formData, 'form Data')
+  },[formData])
 
   return (
     <div className="modal-overlay z-50" style={{ ...overlayStyle, display: isOpen ? 'flex' : 'none' }}>
@@ -122,7 +135,7 @@ const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave 
               <Subheading>Sub Category</Subheading>
             </div>
             <div>
-              <Select
+              {/* <Select
                 name="period"
                 value={activeSubCategory} // Bind the selected value
                 onChange={(e) => handleActiveTrip(e.target.value)} // Listen for changes on the select element
@@ -134,7 +147,9 @@ const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave 
                     </option>
                   )
                 })}
-              </Select>
+              </Select> */}
+              <ComboboxInputField subcategory={subcategory} 
+              onActiveSubcategory={(val)=>handleActiveTrip(val? val : null)}/>
             </div>
           </section>
 
