@@ -9,7 +9,7 @@ import { ExpenseData } from '@/interface/interface'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import ComboboxInputField from './combobox'
-import { SubCategory } from '@/features/setting/settingSlice'
+import { IBank, SubCategory } from '@/features/setting/settingSlice'
 
 interface ModalProps {
   isOpen: boolean
@@ -20,6 +20,7 @@ interface ModalProps {
 const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave }) => {
   const dispatch = useDispatch()
   const subcategory = useSelector((state: RootState) => state.setting.subcategory)
+  const bank = useSelector((state: RootState) => state.setting.bank)
   const today = new Date().toISOString().split('T')[0]
   const [formData, setFormData] = useState<ExpenseData>({
     id: '',
@@ -49,11 +50,11 @@ const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave 
   }
 
   useEffect(() => {
-    setIsActiveButton(formData.description !== '' && formData.expense !== 0 && formData.bank !== '')
+    setIsActiveButton(formData.description !== '' && formData.expense !== 0 && formData.bank !== '' && formData.subcategory !== '')
   }, [formData])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    console.log(e, 'e')
+    // console.log(e, 'e')
     const { name, value } = e.target
 
     if (name === 'expense') {
@@ -77,7 +78,17 @@ const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave 
         ...prevFormData, // Spread the previous state
         subcategory: subcategory.name, // Update only the subcategory field
       }));
-      console.log(name, 'handle active trip');
+      // console.log(name, 'handle active trip');
+    }
+  }
+
+  const handleActiveBank = (bank: IBank | null) => {
+    if(bank !== null){
+      setFormData((prevFormData) => ({
+        ...prevFormData, // Spread the previous state
+        bank: bank.name, // Update only the subcategory field
+      }));
+      // console.log(name, 'handle active trip');
     }
   }
 
@@ -135,21 +146,8 @@ const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave 
               <Subheading>Sub Category</Subheading>
             </div>
             <div>
-              {/* <Select
-                name="period"
-                value={activeSubCategory} // Bind the selected value
-                onChange={(e) => handleActiveTrip(e.target.value)} // Listen for changes on the select element
-              >
-                {subcategory.map((val, id) => {
-                  return (
-                    <option key={id} value={val.name}>
-                      {val.name}
-                    </option>
-                  )
-                })}
-              </Select> */}
-              <ComboboxInputField subcategory={subcategory} 
-              onActiveSubcategory={(val)=>handleActiveTrip(val? val : null)}/>
+              <ComboboxInputField allData={subcategory} 
+              onActiveData={(val)=>handleActiveTrip(val? val : null)}/>
             </div>
           </section>
 
@@ -159,12 +157,8 @@ const ModalExpenseDetail: React.FC<ModalProps> = ({ isOpen, toggleModal, onSave 
               <Subheading>Bank</Subheading>
             </div>
             <div>
-              <Input
-                aria-label="Bank"
-                name="bank" // Updated name attribute
-                value={formData.bank}
-                onChange={handleInputChange}
-              />
+              <ComboboxInputField allData={bank} 
+              onActiveData={(val)=>handleActiveBank(val? val : null)}/>
             </div>
           </section>
 

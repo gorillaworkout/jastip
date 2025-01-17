@@ -3,7 +3,7 @@
 import { db } from '@/config/firebase'
 import { TripData } from '@/interface/interface'
 import { addDoc, collection, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore'
-import { SubCategory } from './../features/setting/settingSlice'
+import { IBank, SubCategory } from './../features/setting/settingSlice'
 import { ExpenseData } from './../interface/interface'
 
 const addPost = async (formData: {
@@ -23,13 +23,13 @@ const addPost = async (formData: {
 }
 
 const addTripFirebase = async (formData: TripData) => {
-  console.log('add trip is running')
+  // console.log('add trip is running')
   const collectionRef = collection(db, 'trip')
   await addDoc(collectionRef, formData)
 }
 
 const addExpenseFirebase = async (formData: ExpenseData) => {
-  console.log('add expense is running')
+  console.log('add expense is running', formData, 'firebase')
   const collectionRef = collection(db, 'expense')
   await addDoc(collectionRef, formData)
 }
@@ -62,4 +62,9 @@ const deleteSubcategory = async (id: string) => {
     console.error('Error deleting document: ', error)
   }
 }
-export { addExpenseFirebase, addPost, addSubcategoryFirebase, addTripFirebase, deleteSubcategory }
+
+const addBankFirebase = async (formData: IBank) => {
+  const collectionRef = collection(db, 'bank')
+  await addDoc(collectionRef, formData)
+}
+export { addExpenseFirebase, addPost, addSubcategoryFirebase, addTripFirebase, deleteSubcategory, addBankFirebase }

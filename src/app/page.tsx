@@ -31,7 +31,7 @@ export function Stat({ title, value }: { title: string; value: string }) {
 }
 
 export const fetchFirebase = async (currentUser: Account) => {
-  console.log('fetch firebase from page.tsx')
+  // console.log('fetch firebase from page.tsx')
   
   const fetchingTrip = async () => {
     const collectionTrip = collection(db, 'trip')
@@ -56,13 +56,26 @@ export const fetchFirebase = async (currentUser: Account) => {
       name: doc.data().name || 'Unknown',
       uid: doc.data().uid || 'Unknown',
     }))
-    console.log(subCategory, 'subCategory')
+    // console.log(subCategory, 'subCategory')
     return subCategory
   }
 
+  const fetchingBank = async () => {
+    const collectionTrip = collection(db, 'bank')
+    const tripCollectionSnapshot = await getDocs(collectionTrip)
+
+    const bank = tripCollectionSnapshot.docs.map((doc) => ({
+      id: doc.data().id || 'Error Id',
+      name: doc.data().name || 'Unknown',
+      uid: doc.data().uid || 'Unknown',
+    }))
+    // console.log(bank, 'subCategory')
+    return bank
+  }
   const fetchingOrders = async (currentUser: Account) => {
     const tripList = await fetchingTrip() // Wait for trip data
     const subCategory = await fetchingSubCategory() // Wait for subcategory data
+    const bank = await fetchingBank() // Wait for bank data
 
     const collectionRef = collection(db, 'orders')
     const orderCollectionSnapshot = await getDocs(collectionRef)
@@ -86,15 +99,17 @@ export const fetchFirebase = async (currentUser: Account) => {
       tripList,
       subCategory,
       order,
+      bank
     }
   }
 
-  const { tripList, subCategory, order } = await fetchingOrders(currentUser)
+  const { tripList, subCategory, order, bank } = await fetchingOrders(currentUser)
 
   return {
     trip: tripList,
     subcategory: subCategory,
     orders: order,
+    bank: bank,
     fetching: true,
   }
 }
@@ -118,11 +133,11 @@ export default function Home() {
     const fetchData = async () => {
       if (isFetched) return // Prevent fetching if already done
   
-      console.log('Fetching orders from Firestore...', currentUser)
+      // console.log('Fetching orders from Firestore...', currentUser)
   
       try {
         const result = await fetchFirebase(currentUser)
-        console.log(result, 'all fetch')  // This will now show the fetched data
+        // console.log(result, 'all fetch')  // This will now show the fetched data
         setIsFetched(result.fetching)
         dispatch(setTrips(result.trip))
         dispatch(setOrders(result.orders))

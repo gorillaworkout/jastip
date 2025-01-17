@@ -1,4 +1,4 @@
-import { SubCategory } from '@/features/setting/settingSlice';
+import { IBank, SubCategory } from '@/features/setting/settingSlice';
 import { Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions } from '@headlessui/react';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import clsx from 'clsx';
@@ -18,23 +18,23 @@ import { useEffect, useState } from 'react';
 // ];
 
 type IComboboxInputFieldProps = {
-    subcategory: SubCategory[]
+    allData: SubCategory[] | IBank[]
     // activeSubcategory: SubCategory
-    onActiveSubcategory: (activeSubCategory: SubCategory | null) => void
+    onActiveData: (activeSubCategory: SubCategory | IBank | null) => void
 }
-const ComboboxInputField: React.FC<IComboboxInputFieldProps> = ({ subcategory,onActiveSubcategory }) => {
+const ComboboxInputField: React.FC<IComboboxInputFieldProps> = ({ allData,onActiveData }) => {
     // Ensure there's always a valid initial value
     const [query, setQuery] = useState<string>('');
     const [selected, setSelected] = useState<SubCategory | null>();
   
     const filteredSubCategory =
       query === ''
-        ? subcategory
-        : subcategory.filter((sub) => {
+        ? allData
+        : allData.filter((sub) => {
             return sub.name.toLowerCase().includes(query.toLowerCase());
           });
     useEffect(()=>{
-        onActiveSubcategory(selected? selected : null)
+        onActiveData(selected? selected : null)
     },[selected])
     return (
       <div className="mx-auto">
@@ -46,8 +46,22 @@ const ComboboxInputField: React.FC<IComboboxInputFieldProps> = ({ subcategory,on
           <div className="relative">
             <ComboboxInput
               className={clsx(
-                'w-full rounded-lg border-none bg-white/5 py-1.5 pr-8 pl-3 text-sm/6 text-white',
-                'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
+                'relative block w-full appearance-none rounded-lg px-[calc(theme(spacing[3.5])-1px)] py-[calc(theme(spacing[2.5])-1px)] sm:px-[calc(theme(spacing[3])-1px)] sm:py-[calc(theme(spacing[1.5])-1px)]',
+                // Typography
+                'text-base/6 text-zinc-950 placeholder:text-zinc-500 sm:text-sm/6 dark:text-white',
+                // Border
+                'border border-zinc-950/10 data-[hover]:border-zinc-950/20 dark:border-white/10 dark:data-[hover]:border-white/20',
+                // Background color
+                'bg-transparent dark:bg-white/5',
+                // Hide default focus styles
+                'focus:outline-none',
+                // Invalid state
+                'data-[invalid]:border-red-500 data-[invalid]:data-[hover]:border-red-500 data-[invalid]:dark:border-red-500 data-[invalid]:data-[hover]:dark:border-red-500',
+                // Disabled state
+                'data-[disabled]:border-zinc-950/20 dark:data-[hover]:data-[disabled]:border-white/15 data-[disabled]:dark:border-white/15 data-[disabled]:dark:bg-white/[2.5%]',
+                // System icons
+                'dark:[color-scheme:dark]',
+                // 'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25'
               )}
               displayValue={(subcategory: SubCategory) => subcategory?.name || ''}
               onChange={(event) => setQuery(event.target.value)}

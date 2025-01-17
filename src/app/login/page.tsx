@@ -13,14 +13,14 @@ const Login: React.FC = () => {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
 
-    console.log(user, 'user', user?.photoURL)
+    // console.log(user, 'user', user?.photoURL)
   useEffect(() => {
     setMounted(true);
 
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
-        console.log(currentUser, 'current user')
+        // console.log(currentUser, 'current user')
         // console.log("User photoURL:", currentUser.photoURL);  // Log to verify URL
            router.push('/');
       } else {
@@ -34,7 +34,7 @@ const Login: React.FC = () => {
   const handleLogin = async () => {
     try {
       await signInWithPopup(auth, provider);
-      console.log(auth, 'auth')
+      // console.log(auth, 'auth')
       // dispatch(setAccount(auth))
       router.push('/');
     } catch (error) {

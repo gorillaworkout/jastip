@@ -39,7 +39,7 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchFirebase } from './page'
-import { setSubcategory } from '@/features/setting/settingSlice'
+import { setBank, setSubcategory } from '@/features/setting/settingSlice'
 function AccountDropdownMenu({ anchor, isLogin }: { anchor: 'top start' | 'bottom end'; isLogin: false | true }) {
   const dispatch = useDispatch()
   const currentUser = useSelector((state: RootState) => state.account.account)
@@ -60,15 +60,17 @@ function AccountDropdownMenu({ anchor, isLogin }: { anchor: 'top start' | 'botto
       const fetchData = async () => {
           if (isFetched) return // Prevent fetching if already done
       
-          console.log('Fetching orders from Firestore...', currentUser)
+          // console.log('Fetching orders from Firestore...', currentUser)
       
           try {
             const result = await fetchFirebase(currentUser)
-            console.log(result, 'all fetch')  // This will now show the fetched data
+            console.log(result, 'all fetching from firebase')
+            // console.log(result, 'all fetch')  // This will now show the fetched data
             setIsFetched(result.fetching)
             dispatch(setTrips(result.trip))
             dispatch(setOrders(result.orders))
             dispatch(setSubcategory(result.subcategory))
+            dispatch(setBank(result.bank))
           } catch (error) {
             console.error('Error fetching data:', error)
           }
@@ -78,7 +80,7 @@ function AccountDropdownMenu({ anchor, isLogin }: { anchor: 'top start' | 'botto
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         // setUser(currentUser);
-        console.log('User photoURL:', currentUser.photoURL) // Log to verify URL
+        // console.log('User photoURL:', currentUser.photoURL) // Log to verify URL
         let currentAcc = {
           displayName: currentUser.displayName,
           email: currentUser.email,

@@ -18,10 +18,10 @@ export function Stat({ title, value, change }: { title: string; value: string; c
       <Divider />
       <div className="mt-6 text-lg/6 font-medium sm:text-sm/6">{title}</div>
       <div className="mt-3 text-3xl/8 font-semibold sm:text-2xl/8">{value}</div>
-      <div className="mt-3 text-sm/6 sm:text-xs/6">
+      {/* <div className="mt-3 text-sm/6 sm:text-xs/6">
         <Badge color={change.startsWith('+') ? 'lime' : 'pink'}>{change}</Badge>{' '}
         <span className="text-zinc-500">from last week</span>
-      </div>
+      </div> */}
     </div>
   )
 }
@@ -42,27 +42,23 @@ export default function Expense() {
   const [endDate, setEndDate] = useState("");
 
 
-  const handleActiveTrip = (name: string) => {
-    // console.log(name, ' active trip')
-    setActiveTrip(name)
-  }
   // Fetching orders from Firestore
   useEffect(() => {
     countTotalExpense()
     if (isFetched) return // Prevent fetching if already done
 
-    console.log('Fetching orders from Firestore...')
+    // console.log('Fetching orders from Firestore...')
     const fetchingOrders = async () => {
       const collectionRef = collection(db, 'expense')
       const orderCollectionSnapshot = await getDocs(collectionRef)
-      console.log(currentUser, 'current user');
+      // console.log(currentUser, 'current user');
       const expenseList = orderCollectionSnapshot.docs
         .filter((doc) => doc.data().uid === currentUser.uid && startDate === "" && endDate === "") // Filter only matching documents
         .map((doc) => ({
           id: doc.data().id || 'Error Id',
           description: doc.data().description || 'Unknown',
           expense: doc.data().expense || 0,
-          subcategory:doc.data().SubCategory || '',
+          subcategory: doc.data().subcategory || '',
           bank: doc.data().bank || '',
           date: doc.data().date || '',
           uid: doc.data().uid || ''
@@ -97,37 +93,37 @@ export default function Expense() {
   const handleEndDateChange = (e: any) => {
     setEndDate(e.target.value);
   };
-  useEffect(()=>{
+  useEffect(() => {
     fetchingOrders()
 
-  },[startDate, endDate])
+  }, [startDate, endDate])
 
   const fetchingOrders = async () => {
     const collectionRef = collection(db, 'expense');
     const orderCollectionSnapshot = await getDocs(collectionRef);
-    console.log(currentUser, 'current user');
-  
+    // console.log(currentUser, 'current user');
+
     const expenseList = orderCollectionSnapshot.docs
       .filter((doc) => {
         const docData = doc.data();
         const docDate = new Date(docData.date); // Assuming date is in a compatible format
-        console.log(docDate, 'docDate');
-  
+        // console.log(docDate, 'docDate');
+
         // Filter by user ID
         if (docData.uid !== currentUser.uid) return false;
-  
+
         // Normalize dates to midnight
         const normalizeDate = (date: Date) =>
           new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  
+
         const start = startDate ? normalizeDate(new Date(startDate)) : null;
         const end = endDate ? normalizeDate(new Date(endDate)) : null;
         const normalizedDocDate = normalizeDate(docDate);
-  
+
         // Filter logic:
         if (start && normalizedDocDate < start) return false; // Exclude dates before startDate
         if (end && normalizedDocDate > end) return false; // Exclude dates after endDate
-        console.log('expense list from date', start, end, normalizedDocDate);
+        // console.log('expense list from date', start, end, normalizedDocDate);
         return true; // Include valid documents
       })
       .map((doc) => ({
@@ -139,7 +135,7 @@ export default function Expense() {
         date: doc.data().date || '',
         uid: doc.data().uid || ''
       }));
-  
+
     // Dispatch filtered expenses to Redux
     console.log(expenseList, 'expese List');
     dispatch(setExpenses(expenseList));
@@ -147,19 +143,19 @@ export default function Expense() {
     setIsFetched(true); // Set the flag to true after fetching
     countTotalExpense(); // Count total expenses
   };
-  
-  
 
-  
+
+
+
   return (
     <>
       <Heading>Hello, {currentUser.displayName}</Heading>
-      <div className="mt-8 flex items-end justify-between">
+      <div className="mt-8 flex items-end justify-between sm:flex-row flex-col">
         <Subheading>Expense Overview</Subheading>
         <div className="flex flex-row items-end gap-x-5">
-          <div className="flex justify-between items-center space-x-4">
+          <div className="flex justify-between items-end sm:items-center gap-4 flex-col sm:flex-row">
             {/* Start Date Section */}
-            <div className="flex-1 text-left">
+            <div className="flex text-left w-full">
               <label
                 htmlFor="startDate"
                 className="block text-sm font-medium text-white mb-1"
@@ -176,7 +172,7 @@ export default function Expense() {
             </div>
 
             {/* End Date Section */}
-            <div className="flex-1 text-right">
+            <div className="flex text-left w-full">
               <label
                 htmlFor="endDate"
                 className="block text-sm font-medium text-white mb-1"
@@ -193,29 +189,13 @@ export default function Expense() {
               />
             </div>
           </div>
-          {/* <div className="flex justify-end h-full">
-            <Select
-              className=""
-              name="period"
-              value={activeTrip} // Bind the selected value
-              onChange={(e) => handleActiveTrip(e.target.value)} // Listen for changes on the select element
-            >
-              {allTrips?.map((val, id) => {
-                return (
-                  <option key={id} value={val.tripName}>
-                    {val.tripName}
-                  </option>
-                )
-              })}
-            </Select>
-          </div> */}
         </div>
       </div>
       <div className="mt-4 grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
         <Stat title="Total Expense" value={formatToRupiah(totalExpense)} change="+4.5%" />
         <Stat title="Total Item" value={allExpenses.length.toString()} change="-0.5%" />
-        <Stat title="Total Weight" value="20" change="+4.5%" />
-        <Stat title="Total Trip" value="12" change="+21.2%" />
+        {/* <Stat title="Total Bank" value="20" change="+4.5%" /> */}
+        {/* <Stat title="Total Trip" value="12" change="+21.2%" /> */}
       </div>
       <div className="mt-8 flex w-full justify-end">
         <ModalExpense initialOpen={false} description={'Expense'} />
@@ -228,25 +208,29 @@ export default function Expense() {
             <TableHeader>Description</TableHeader>
             <TableHeader>Expense</TableHeader>
             <TableHeader>Subcategory</TableHeader>
-            <TableHeader>Date</TableHeader>
-            <TableHeader className="text-right">Bank</TableHeader>
+            <TableHeader >Bank</TableHeader>
+            <TableHeader className="text-right">Date</TableHeader>
           </TableRow>
         </TableHead>
         <TableBody>
           {allExpenses
             .slice() // Use slice to create a shallow copy to avoid mutating the original array
-            .sort((a, b) => parseInt(a.id) - parseInt(b.id)) // Sort orders by ID in ascending order
-            .map((order) => (
-              // <TableRow key={order.id} href={'/orders/3000'} title={`Order #${order.id}`}>
-              <TableRow key={order.id}>
-                <TableCell>{order.id}</TableCell>
-                <TableCell>{order.description}</TableCell>
-                <TableCell>{formatToRupiah(order?.expense)}</TableCell>
-                <TableCell>{order.subcategory}</TableCell>
-                <TableCell>{formatDate(order.date)}</TableCell>
-                <TableCell className="text-right">{order.bank}</TableCell>
-              </TableRow>
-            ))}
+            .sort((a, b) => parseInt(a.id.split('-')[1]) - parseInt(b.id.split('-')[1])) // Sort orders by ID in ascending order
+            .map((order) => {
+              return (
+                (
+                  // <TableRow key={order.id} href={'/orders/3000'} title={`Order #${order.id}`}> // if you want to direct to another page
+                  <TableRow key={order.id}>
+                    <TableCell>{order.id}</TableCell>
+                    <TableCell>{order.description}</TableCell>
+                    <TableCell>{formatToRupiah(order?.expense)}</TableCell>
+                    <TableCell>{order.subcategory}</TableCell>
+                    <TableCell >{order.bank}</TableCell>
+                    <TableCell className="text-right">{formatDate(order.date)}</TableCell>
+                  </TableRow>
+                )
+              )
+            })}
         </TableBody>
       </Table>
     </>
