@@ -38,8 +38,8 @@ import { collection, getDocs } from 'firebase/firestore'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchFirebase } from './page'
 import { setBank, setSubcategory } from '@/features/setting/settingSlice'
+import { fetchFirebase } from '@/utils/fetch'
 function AccountDropdownMenu({ anchor, isLogin }: { anchor: 'top start' | 'bottom end'; isLogin: false | true }) {
   const dispatch = useDispatch()
   const currentUser = useSelector((state: RootState) => state.account.account)

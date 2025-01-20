@@ -1,8 +1,9 @@
-import { Stat } from '@/app/page'
+
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
+import Stat from '@/components/Stat'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'
 import { getEvent, getEventOrders } from '@/data'
 import { ChevronLeftIcon } from '@heroicons/react/16/solid'
@@ -54,13 +55,12 @@ export default async function Event({ params }: { params: { id: string } }) {
         </div>
       </div>
       <div className="mt-8 grid gap-8 sm:grid-cols-3">
-        <Stat title="Total revenue" value={event.totalRevenue} change={event.totalRevenueChange} />
+        <Stat title="Total revenue" value={event.totalRevenue} />
         <Stat
           title="Tickets sold"
           value={`${event.ticketsSold}/${event.ticketsAvailable}`}
-          change={event.ticketsSoldChange}
         />
-        <Stat title="Pageviews" value={event.pageViews} change={event.pageViewsChange} />
+        <Stat title="Pageviews" value={event.pageViews} />
       </div>
       <Subheading className="mt-12">Recent orders</Subheading>
       <Table className="mt-4 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)]">
