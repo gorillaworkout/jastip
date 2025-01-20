@@ -1,9 +1,7 @@
 'use client'
-import { Badge } from '@/components/badge'
 import { Divider } from '@/components/divider'
 import { Heading, Subheading } from '@/components/heading'
 import ModalExpense from '@/components/ModalExpense'
-import { Select } from '@/components/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'
 import { db } from '@/config/firebase'
 import { RootState } from '@/features/store'
@@ -11,24 +9,10 @@ import { collection, getDocs } from 'firebase/firestore'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setExpenses } from '../../features/expense/expenseSlice'
+import  formatToRupiah  from '@/components/formatToRupiah'
+import  Stat  from '@/components/Stat'
 
-export function Stat({ title, value, change }: { title: string; value: string; change: string }) {
-  return (
-    <div>
-      <Divider />
-      <div className="mt-6 text-lg/6 font-medium sm:text-sm/6">{title}</div>
-      <div className="mt-3 text-3xl/8 font-semibold sm:text-2xl/8">{value}</div>
-      {/* <div className="mt-3 text-sm/6 sm:text-xs/6">
-        <Badge color={change.startsWith('+') ? 'lime' : 'pink'}>{change}</Badge>{' '}
-        <span className="text-zinc-500">from last week</span>
-      </div> */}
-    </div>
-  )
-}
 
-export function formatToRupiah(amount: number): string {
-  return 'RP ' + amount?.toFixed(0)?.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-}
 export default function Expense() {
   const dispatch = useDispatch()
   const allExpenses = useSelector((state: RootState) => state.expenses.expenses)
@@ -192,8 +176,8 @@ export default function Expense() {
         </div>
       </div>
       <div className="mt-4 grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat title="Total Expense" value={formatToRupiah(totalExpense)} change="+4.5%" />
-        <Stat title="Total Item" value={allExpenses.length.toString()} change="-0.5%" />
+        <Stat title="Total Expense" value={formatToRupiah(totalExpense)}/>
+        <Stat title="Total Item" value={allExpenses.length.toString()} />
         {/* <Stat title="Total Bank" value="20" change="+4.5%" /> */}
         {/* <Stat title="Total Trip" value="12" change="+21.2%" /> */}
       </div>

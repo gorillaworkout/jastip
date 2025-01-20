@@ -13,22 +13,10 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setOrders } from '../features/orders/orderSlice'
-import { formatToRupiah } from './expense/page' 
+import  formatToRupiah  from './expense/page' 
 import { Account } from '@/features/account/accountSlice'
 import { setSubcategory } from '@/features/setting/settingSlice'
-export function Stat({ title, value }: { title: string; value: string }) {
-  return (
-    <div>
-      <Divider />
-      <div className="mt-6 text-lg/6 font-medium sm:text-sm/6">{title}</div>
-      <div className="mt-3 text-3xl/8 font-semibold sm:text-2xl/8">{value}</div>
-      <div className="mt-3 text-sm/6 sm:text-xs/6">
-        {/* <Badge color={change.startsWith('+') ? 'lime' : 'pink'}>{change}</Badge>{' '} */}
-        {/* <span className="text-zinc-500">from last week</span> */}
-      </div>
-    </div>
-  )
-}
+import Stat from '@/components/Stat'
 
 export const fetchFirebase = async (currentUser: Account) => {
   // console.log('fetch firebase from page.tsx')
@@ -185,7 +173,7 @@ export default function Home() {
         </div>
       </div>
       <div className="mt-4 grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
-        <Stat title="Perkiraan Income" value={formatToRupiah(income)} />
+        {/* <Stat title="Perkiraan Income" value={formatToRupiah(income)} /> */}
         <Stat title="Total Customer" value={totalCustomer.toString()} />
         <Stat title="Total Weight" value={totalWeight} />
         <Stat title="Kurs Yen" value={kurs.toString()} />
